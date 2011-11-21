@@ -13,7 +13,6 @@ struct CommandTrieNode {
     char value;
     std::list<CommandTrieNode *> children;
     commandFunctPtr function;
-    int num_of_subfns;
 
     CommandTrieNode();
     ~CommandTrieNode();

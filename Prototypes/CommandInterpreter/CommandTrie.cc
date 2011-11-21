@@ -4,8 +4,7 @@ using namespace std;
 
 CommandTrieNode::CommandTrieNode() : value(0),
                                      children(0) ,
-                                     function(0) ,
-                                     num_of_subfns(0) { }
+                                     function(0) { }
 
 CommandTrieNode::~CommandTrieNode() {
     int size = children.size();
@@ -51,7 +50,6 @@ CommandTrieNode * CommandTrieNode::deleteChild( char value ) {
 }
 
 void CommandTrie::addCommand( const string &  command , commandFunctPtr fn ) {
-    root_node->num_of_subfns += 1;
     CommandTrieNode * current_node = root_node;
     // Find path that matches the string, creating new nodes if necessary.
     for ( int i = 0 ; i < command.size() ; ++i ) {
@@ -63,7 +61,6 @@ void CommandTrie::addCommand( const string &  command , commandFunctPtr fn ) {
             current_node->children.push_front( next_node );
         }
         current_node = next_node;
-        current_node->num_of_subfns += 1;
     }
     current_node->function = fn;
 }
@@ -87,13 +84,14 @@ commandFunctPtr CommandTrie::findCommand( const string & command ) const {
         if ( current_node->function != 0 ) {
             return_function = current_node->function;
         }
-        else if ( current_node->num_of_subfns == 1 ) {
-            while( current_node->children.size() > 0 ) {
-                assert( current_node->children.size() == 1 );
+        else {
+            while( ( current_node->children.size() == 1 ) 
+                   && ( current_node->function == 0 ) ) {
                 current_node = current_node->children.front();
             }
-            assert( current_node->function != 0 );
-            return_function = current_node->function;
+            if ( current_node->children.size() == 0 ) {
+                return_function = current_node->function;
+            }
         }
     }
 
@@ -102,6 +100,8 @@ commandFunctPtr CommandTrie::findCommand( const string & command ) const {
 
 commandFunctPtr CommandTrie::deleteCommand( const string & command ) {
     CommandTrieNode * current_node = root_node;
+    CommandTrieNode * last_shared_node = root_node;
+    char value_at_shared_node = 0;
     commandFunctPtr return_fn = 0;
 
     for ( int i = 0 ; i < command.size() ; ++i ) {
@@ -110,25 +110,19 @@ commandFunctPtr CommandTrie::deleteCommand( const string & command ) {
         if ( next_node == 0 ) {
             return 0;
         }
+        if ( current_node->children.size() > 1 ) {
+            last_shared_node = current_node;
+            value_at_shared_node = value;
+        }
         current_node = next_node;
     }
     
     if ( current_node->function != 0 ) {
         return_fn = current_node->function;
         current_node->function = 0;
-        current_node = root_node;
-        root_node->num_of_subfns -= 1;
-        for ( int i = 0 ; i < command.size() ; ++i ) {
-            char value = command[ i ];
-            CommandTrieNode * next_node = current_node->findChild( value );
-            if ( ( current_node->num_of_subfns >= 1 ) && 
-                 ( next_node->num_of_subfns == 1 ) ) {
-                current_node->deleteChild( value );
-                delete next_node;
-                break;
-            }
-            current_node = next_node;
-            current_node->num_of_subfns -= 1;
+
+        if ( current_node->children.size() == 0 ) {
+            delete last_shared_node->deleteChild( value_at_shared_node );
         }
     }
 
