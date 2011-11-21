@@ -14,9 +14,6 @@ struct CommandTrieNode {
     // Keep children in a linked list
     std::list<CommandTrieNode *> children;
     commandFunctPtr function;
-    // Number of functions in children (recursively). Need this for finding
-    // using pre
-    int num_of_subfns;
 
     CommandTrieNode();
     ~CommandTrieNode();
