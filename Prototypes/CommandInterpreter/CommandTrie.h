@@ -6,13 +6,16 @@
 #include <cassert>
 #include <iostream>
 
-// A command function runs a series of steps and returns nothing
+// A pointer to a command function. See how it's used in main.cc
 typedef void (*commandFunctPtr) ();
 
 struct CommandTrieNode {
     char value;
+    // Keep children in a linked list
     std::list<CommandTrieNode *> children;
     commandFunctPtr function;
+    // Number of functions in children (recursively). Need this for finding
+    // using pre
     int num_of_subfns;
 
     CommandTrieNode();

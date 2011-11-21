@@ -33,7 +33,7 @@ CommandTrieNode * CommandTrieNode::findChild( char value ) {
 }
 
 // Returns a pointer to the specified child node, or 0 if the child doesn't
-// exist.
+// exist. Also deletes the child node. (Yes, this reuses code from above).
 CommandTrieNode * CommandTrieNode::deleteChild( char value ) {
     CommandTrieNode * return_node = 0;
     if ( children.size() > 0 ) {
