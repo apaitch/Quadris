@@ -3,21 +3,21 @@
 #include "PRNG.h"
 using namespace std;
 
-void level::restart()
+void Level::restart()
 {
   //reset the score record and current level
   score=0;
   currentLevel=0;
 }
 
-level::level(Board *b):b(b)
+Level::Level(Board *b):b(b)
 {
   hiscore=0;
   this->restart();
   fs.open("sequence.txt");
 }
 
-char level::numCharTransfer(int i)
+char Level::numCharTransfer(int i)
 {
   if(i==0)
     return 'I';
@@ -35,7 +35,7 @@ char level::numCharTransfer(int i)
     return 'T';
 }
 
-int level::numGenerator()
+int Level::numGenerator()
 {
   PRNG prng;
   int num;
@@ -107,7 +107,7 @@ int level::numGenerator()
     }
 }
 
-void level::findNext()
+void Level::findNext()
 {
  
   if(currentLevel==0)
@@ -126,25 +126,25 @@ void level::findNext()
 
 }
 
-Block* level::createNew()
+Block* Level::createNew()
 {
   Block *newBlock;
 
   //when create new bolck, assume findNext() function has
   //already been called, so nextBlock has already been renewed
 
-  newBlock=new block(nextBlock,0,0,currentLevel,);
+  newBlock=new Block(nextBlock,0,0,currentLevel,b);
   return newBlock;
 }
 
-void level::levelup()
+void Level::levelup()
 {
   currentLevel+=1;
   if(currentLevel>3)
     currentLevel=3;
 }
 
-void level::leveldown()
+void Level::leveldown()
 {
   currentLevel-=1;
   if(currentLevel<0)

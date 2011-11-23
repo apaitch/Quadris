@@ -2,7 +2,7 @@
 #include "board.h"
 #include <fstream>
 
-class level{
+class Level{
  private:
   int score;
   int hiscore;
@@ -17,7 +17,7 @@ class level{
   void findNext(); //find the next block's type
 
  public:
-  level(Board *b);
+  Level(Board *b);
   Block* createNew();
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
