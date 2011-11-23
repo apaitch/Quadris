@@ -12,6 +12,7 @@ class Block {
     private:
         Board * board;
         char type;
+        int num_living_cells;
         int birth_level;
         std::pair<int , int> origin;
         std::pair<int , int> points [POINTS_PER_BLOCK];
@@ -28,6 +29,8 @@ class Block {
         void leftRotate();
         void drop();
         char getType() const;
+        int getLevel() const;
+        bool deleteCell();
 };
 
 #endif

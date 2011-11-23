@@ -191,3 +191,13 @@ void Block::drop() {
 char Block::getType() const {
     return type;
 }
+
+int Block::getLevel() const {
+    return birth_level;
+}
+
+bool Block::deleteCell() {
+    num_living_cells -= 1;
+    num_living_cells == 0 ? return true : return false;
+}
+
