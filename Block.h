@@ -6,6 +6,8 @@
 #include <utility>
 #include <functional>
 
+class Board;
+
 class Block {
     private:
         Board * board;

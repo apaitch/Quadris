@@ -1,6 +1,5 @@
 #include "Block.h"
-
-using namespace std;
+#include "Board.h"
 
 // Overriding operators for points -------------------
 pair< int , int > operator+( const pair<int,int> & p1 , const pair<int,int> & p2 ) {

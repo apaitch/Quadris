@@ -1,8 +1,8 @@
 #include <iostream>
-#include "board.h"
+#include "Board.h"
 using namespace std;
 
-board::board()
+Board::Board()
 {
   //initial all block pointers to NULL
   for(int i=0;i<15;++i)
@@ -17,12 +17,12 @@ board::board()
     rowFilled[i]=0;
 }
 
-Block* board::getBlockPtr(pair<int,int> a)
+Block* Board::getBlockPtr(pair<int,int> a)
 {
   return blockPtr[a.first][a.second];
 }
 
-void board::addBlock(pair<int,int> *a,Block *b)
+void Board::addBlock(pair<int,int> *a,Block *b)
 {
   for(int i=0;i<4;++i)
     {
@@ -33,7 +33,7 @@ void board::addBlock(pair<int,int> *a,Block *b)
     }
 }
 
-void board::deleteBlock(pair<int,int> *a) //used when delete the whole block
+void Board::deleteBlock(pair<int,int> *a) //used when delete the whole block
 {
   for(int i=0;i<4;++i)
     {
@@ -42,7 +42,7 @@ void board::deleteBlock(pair<int,int> *a) //used when delete the whole block
     }
 }
 
-void board::print()
+void Board::print()
 {
   for(int i=0;i<15;++i)
     {
@@ -54,7 +54,7 @@ void board::print()
     }
 }
 
-void board::examine()
+void Board::examine()
 {
   int numRemovedRow=0; //record how many rows have be removed
   for(int i=0;i<15;++i)
@@ -67,7 +67,7 @@ void board::examine()
     }
 }
   
-void board::removeARow(int i)
+void Board::removeARow(int i)
 {
   int cellLevel;  //record the level of the removed block
 
