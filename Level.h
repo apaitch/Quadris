@@ -1,10 +1,11 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
-#include "Block.h"
-#include "Board.h"
 #include <fstream>
 #include "PRNG.h"
+
+class Block;
+class Board;
 
 class Level{
  private:

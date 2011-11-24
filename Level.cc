@@ -1,5 +1,7 @@
 #include <iostream>
 #include "Level.h"
+#include "Block.h"
+#include "Board.h"
 
 using namespace std;
 
