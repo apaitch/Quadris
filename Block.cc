@@ -213,6 +213,9 @@ void Block::getPoints( vector< pair<int,int> > & points_vector ) const {
 
 bool Block::deleteCell() {
     num_living_cells -= 1;
+    //**
+    if(num_living_cells==0)
+      cout<<"cell completely deleted"<<endl;
     return (num_living_cells == 0) ? true : false;
 }
 

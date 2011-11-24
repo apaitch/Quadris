@@ -6,17 +6,17 @@
 
 class Block;
 class Board;
+class QuadrisGame;
 
 class Level{
  private:
-  int score;
-  int hiscore;
-  int currentLevel;
+  int currentLevel; //stores the level currently in
   std::ifstream fs; //store the content in "sequence.txt"
-  Board *b;
+  Board *b; //a ptr to the board
   char nextBlock; //record the type of the next block
-  PRNG prng;
+  PRNG prng; //random number generator
   int seed;  //record the seed for PRNG
+  QuadrisGame *game; //store the pointer to the game
 
   char numCharTransfer(int i);
   void restart();
@@ -24,7 +24,7 @@ class Level{
   void findNext(); //find the next block's type
 
  public:
-  Level(Board *b);
+  Level(Board *b,QuadrisGame *game);
   Block* createNew();
   int getLevel();
   void levelup();     // increase the level by 1

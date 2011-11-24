@@ -2,9 +2,10 @@
 #define __QUADRIS_GAME_H__
 
 #include "CommandTrie.h"
-#include "Board.h"
-#include "Level.h"
-#include "Block.h"
+
+class Block;
+class Board;
+class Level;
 
 class QuadrisGame {
     private:

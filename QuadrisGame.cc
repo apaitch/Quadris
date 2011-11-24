@@ -1,10 +1,13 @@
 #include "QuadrisGame.h"
+#include "Board.h"
+#include "Level.h"
+#include "Block.h"
 
 using namespace std;
 
 QuadrisGame::QuadrisGame() : board( new Board ) ,
                              command_interpreter( new CommandTrie ) ,
-                             level( new Level (board) ) ,
+                             level( new Level (board,this) ) ,
                              high_score( 0 ) ,
                              score( 0 ) { initialize(); }
 
@@ -105,9 +108,11 @@ void QuadrisGame::drop() {
 }
 
 void QuadrisGame::levelUp() {
+  level->levelup();
 }
 
 void QuadrisGame::levelDown() {
+  level->leveldown();
 }
 
 void QuadrisGame::reset() {
@@ -116,7 +121,8 @@ void QuadrisGame::reset() {
     delete level;
 
     board = new Board;
-    level = new Level ( board );
+    level = new Level ( board, this );
+
 }
 
 // -------------------------

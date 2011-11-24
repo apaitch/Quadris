@@ -2,20 +2,22 @@
 #include "Level.h"
 #include "Block.h"
 #include "Board.h"
+#include "QuadrisGame.h"
 
 using namespace std;
 
 void Level::restart()
 {
   //reset the score record and current level
-  score=0;
   currentLevel=0;
   prng();
+
+  //initially set seed to 0
+  seed=0;
 }
 
-Level::Level(Board *b):b(b)
+Level::Level(Board *b,QuadrisGame *game):b(b),game(game)
 {
-  hiscore=0;
   this->restart();
   fs.open("sequence.txt");
 }

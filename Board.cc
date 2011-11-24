@@ -25,13 +25,13 @@ Board::~Board() {
   //examine each cell, if not Null, delete the cell
   //if a block is totally deleted, 
   //release the memory for the block
-  for ( int x = 0 ; x < num_rows ; ++x ) {
-    for ( int y = 0 ; y < num_columns ; ++y ) {
+  for ( int x = 0 ; x < num_columns ; ++x ) {
+    for ( int y = 0 ; y < num_rows ; ++y ) {
       if(blockPtr[x][y]!=NULL){
-	bool removed=blockPtr[i][k]->deleteCell();
+	bool removed=blockPtr[x][y]->deleteCell();
 	if(removed)
 	  {
-	    delete blockPtr[i][k];
+	    delete blockPtr[x][y];
 	  }
       }
     }
@@ -138,7 +138,13 @@ void Board::removeARow(int row_to_rm)
 	{
 	  blockPtr[x][y]=blockPtr[x][y-1];
 	}
+      //the record for the # of cells filled for each row
+      //should also be shifted
+      rowFilled[y]=rowFilled[y-1];
     }
+
+  //the first row is filled by 0 cells
+  rowFilled[0]=0;
 
   //for the up most row, NULL will be refilled
   for(int x=0;x<num_columns;++x)

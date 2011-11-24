@@ -1,7 +1,7 @@
 OBJECT=Block.o Board.o Level.o CommandTrie.o QuadrisGame.o main.o
 
 main: ${OBJECT}
-	g++ ${OBJECT} -o main
+	g++ -g ${OBJECT} -o main
 
 main.o: main.cc
 
