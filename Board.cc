@@ -19,12 +19,23 @@ Board::Board()
 }
 
 Board::~Board() {
-    delete activeBlock;
-    for ( int x = 0 ; x < num_rows ; ++x ) {
-        for ( int y = 0 ; y < num_columns ; ++y ) {
-            delete blockPtr[x][y];
-        }
+  //delete the active block
+  delete activeBlock;
+  
+  //examine each cell, if not Null, delete the cell
+  //if a block is totally deleted, 
+  //release the memory for the block
+  for ( int x = 0 ; x < num_rows ; ++x ) {
+    for ( int y = 0 ; y < num_columns ; ++y ) {
+      if(blockPtr[x][y]!=NULL){
+	bool removed=blockPtr[i][k]->deleteCell();
+	if(removed)
+	  {
+	    delete blockPtr[i][k];
+	  }
+      }
     }
+  }
 }
 
 Block * Board::getActiveBlock() {
