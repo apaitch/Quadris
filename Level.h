@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "Board.h"
 #include <fstream>
+#include "PRNG.h"
 
 class Level{
  private:
@@ -13,6 +14,8 @@ class Level{
   std::ifstream fs; //store the content in "sequence.txt"
   Board *b;
   char nextBlock; //record the type of the next block
+  PRNG prng;
+  int seed;  //record the seed for PRNG
 
   char numCharTransfer(int i);
   void restart();
@@ -25,6 +28,8 @@ class Level{
   int getLevel();
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
+  void setSeed(int); //set new seed for PRNG
+
 };
 
 #endif

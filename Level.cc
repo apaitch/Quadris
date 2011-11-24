@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Level.h"
-#include "PRNG.h"
 
 using namespace std;
 
@@ -9,6 +8,7 @@ void Level::restart()
   //reset the score record and current level
   score=0;
   currentLevel=0;
+  prng();
 }
 
 Level::Level(Board *b):b(b)
@@ -38,7 +38,6 @@ char Level::numCharTransfer(int i)
 
 int Level::numGenerator()
 {
-  PRNG prng;
   int num;
   if(currentLevel==1)
     {
@@ -155,4 +154,9 @@ void Level::leveldown()
   currentLevel-=1;
   if(currentLevel<0)
     currentLevel=0;
+}
+
+void Level::setSeed(int a)
+{
+  prng.seed(a);
 }
