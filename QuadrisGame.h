@@ -1,8 +1,8 @@
 #ifndef __QUADRIS_GAME_H__
 #define __QUADRIS_GAME_H__
 
-#include "Board.h"
 #include "CommandTrie.h"
+#include "Board.h"
 #include "Level.h"
 #include "Block.h"
 
@@ -28,9 +28,9 @@ class QuadrisGame {
         // -------------------------
 
         void initialize();
-        void lineCleared( int );
+        void lineCleared( int , int );
         void blockCleared( int );
-        void processInput();
+        bool processInput();
         void draw();
     public:
         QuadrisGame();

@@ -1,4 +1,5 @@
 #include "CommandTrie.h"
+#include "QuadrisGame.h"
 
 using namespace std;
 

@@ -1,6 +1,8 @@
 #include "Block.h"
 #include "Board.h"
 
+using namespace std;
+
 // Overriding operators for points -------------------
 pair< int , int > operator+( const pair<int,int> & p1 , const pair<int,int> & p2 ) {
     return make_pair( p1.first + p2.first , p1.second + p2.second );
@@ -17,7 +19,7 @@ pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
 
 Block::Block( char type , pair< int, int > create_point , int level , Board * board )
                 : type( type ), origin( create_point ), 
-                  birth_level(level) , board( board ) {
+                  birth_level(level) , board( board ) , num_living_cells(4) {
 
     pair< int , int > x_increment = make_pair( 1 , 0 );
     pair< int , int > y_increment = make_pair( 0 , 1 );
@@ -70,7 +72,8 @@ Block::Block( char type , pair< int, int > create_point , int level , Board * bo
 // A transformation (e.g. rotate, move) generates an array of transformed points
 // and passes it to tryTransformation(). If the transformation doesn't result in
 // collisions in the board then tryTransformation() applies the transformation.
-void Block::tryTransformation( pair< int , int > transformed_points [] ) {
+void Block::tryTransformation( pair< int , int > transformed_points [] ,
+                               pair< int , int > transformed_origin ) {
     bool transformation_success = true;
 
     // Check for collisions
@@ -83,22 +86,25 @@ void Block::tryTransformation( pair< int , int > transformed_points [] ) {
     }
 
     if ( transformation_success ) {
-        board->deleteBlock( points );
+        board->deleteBlock( this );
+        origin = transformed_origin;
         for ( int i = 0 ; i < POINTS_PER_BLOCK ; ++i ) {
             points[i] = transformed_points[i];
         }
-        board->addBlock( points , this );
+        board->addBlock( this );
     }
 }
 
 // Moves each point in block by specified x and y coordinates.
 void Block::move( int x , int y ) {
     pair< int , int > transformed_points [POINTS_PER_BLOCK];
+    pair< int , int > transformed_origin;
+    transformed_origin = make_pair( origin.first + x , origin.second + y );
     for ( int i = 0 ; i < POINTS_PER_BLOCK ; ++i ) {
         transformed_points[i] 
             = make_pair( points[i].first + x , points[i].second + y );
     }
-    tryTransformation( transformed_points );
+    tryTransformation( transformed_points , transformed_origin );
 }
 
 // Rotates block right if "left" is false.
@@ -141,7 +147,7 @@ void Block::rotate( bool left ) {
         }
     }
 
-    tryTransformation( transformed_points );
+    tryTransformation( transformed_points , origin );
 }
 
 void Block::moveLeft() {
@@ -172,11 +178,15 @@ void Block::drop() {
     for( int i = 0 ; i < POINTS_PER_BLOCK ; ++i ) {
         if ( points[i].second == origin.second ) {
             int possible_drop = 0;
-            for ( int j = origin.second ; j < 15 ; ++j ) {
+            for ( int j = origin.second + 1 ; j < 18 ; ++j ) {
                 pair< int , int > current_point = 
-                    make_pair( points[i].first, origin.second );
+                    make_pair( points[i].first, j );
+                cout << possible_drop << "AH" << endl;
                 if ( board->getBlockPtr( current_point ) == 0 ) {
                     possible_drop += 1;
+                }
+                else {
+                    break;
                 }
             }
             if ( possible_drop < furthest_possible_drop ) {
@@ -196,8 +206,12 @@ int Block::getLevel() const {
     return birth_level;
 }
 
+void Block::getPoints( vector< pair<int,int> > & points_vector ) const {
+    points_vector.assign( points , points + POINTS_PER_BLOCK );
+}
+
 bool Block::deleteCell() {
     num_living_cells -= 1;
-    num_living_cells == 0 ? return true : return false;
+    return (num_living_cells == 0) ? true : false;
 }
 

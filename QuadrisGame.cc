@@ -4,8 +4,8 @@ using namespace std;
 
 QuadrisGame::QuadrisGame() : board( new Board ) ,
                              command_interpreter( new CommandTrie ) ,
-                             level( new LevelOne ) ,
-                             high_scocre( 0 ) ,
+                             level( new Level (board) ) ,
+                             high_score( 0 ) ,
                              score( 0 ) { initialize(); }
 
 QuadrisGame::~QuadrisGame() {
@@ -15,14 +15,17 @@ QuadrisGame::~QuadrisGame() {
 }
 
 void QuadrisGame::initialize() {
-    command_interpreter.addCommand( "left" , &moveLeft() );
-    command_interpreter.addCommand( "right" , &moveRight() );
-    command_interpreter.addCommand( "clockwise" , &rightRotate() );
-    command_interpreter.addCommand( "counterclockwise" , &leftRotate() );
-    command_interpreter.addCommand( "drop" , &drop() );
-    command_interpreter.addCommand( "levelup" , &levelUp() );
-    command_interpreter.addCommand( "leveldown" , &levelDown() );
-    command_interpreter.addCommand( "restart" , &reset() );
+    command_interpreter->addCommand( "left" , &QuadrisGame::moveLeft );
+    command_interpreter->addCommand( "right" , &QuadrisGame::moveRight );
+    command_interpreter->addCommand( "clockwise" , &QuadrisGame::rightRotate );
+    command_interpreter->addCommand( "counterclockwise" , &QuadrisGame::leftRotate );
+    command_interpreter->addCommand( "down" , &QuadrisGame::moveDown );
+    command_interpreter->addCommand( "drop" , &QuadrisGame::drop );
+    command_interpreter->addCommand( "levelup" , &QuadrisGame::levelUp );
+    command_interpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
+    command_interpreter->addCommand( "restart" , &QuadrisGame::reset );
+    board->setActiveBlock( level->createNew() );
+    draw();
 }
 
 void QuadrisGame::lineCleared( int num_cleared , int level ) {
@@ -42,10 +45,11 @@ void QuadrisGame::blockCleared( int level ) {
 // Take in and process one command.
 bool QuadrisGame::processInput() {
     string full_command;
-    if ( cin >> command ) {
-        commandFunctPtr = command_interpreter.findCommand( command );    
-        if ( commandFunctPtr != 0 ) {
-            (*commandFunctPtr)();
+    commandFunctPtr command;
+    if ( cin >> full_command ) {
+        commandFunctPtr command = command_interpreter->findCommand( full_command );    
+        if ( command != 0 ) {
+            CALL_MEMBER_FN(*this , command)();
         }
         return true;
     }
@@ -58,11 +62,11 @@ void QuadrisGame::draw() {
     cout << "Level:   " << level->getLevel() << endl;
     cout << "Score:   " << score << endl;
     cout << "Hi Score: " << high_score << endl;
-    cout << "------------" << endl;
+    cout << "----------" << endl;
     board->print();
-    cout << "------------" << endl;
-    cout << "Next:" << endl;
-    level->printNext();
+    cout << "----------" << endl;
+    //cout << "Next:" << endl;
+    //level->printNext();
 }
 
 void QuadrisGame::runGameLoop() {
@@ -97,6 +101,7 @@ void QuadrisGame::moveDown() {
 void QuadrisGame::drop() {
     board->getActiveBlock()->drop();
     board->examine();
+    board->setActiveBlock( level->createNew() );
 }
 
 void QuadrisGame::levelUp() {
@@ -111,7 +116,7 @@ void QuadrisGame::reset() {
     delete level;
 
     board = new Board;
-    level = new LevelOne;
+    level = new Level ( board );
 }
 
 // -------------------------

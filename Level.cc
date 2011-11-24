@@ -1,6 +1,7 @@
 #include <iostream>
-#include "level.h"
+#include "Level.h"
 #include "PRNG.h"
+
 using namespace std;
 
 void Level::restart()
@@ -128,13 +129,18 @@ void Level::findNext()
 
 Block* Level::createNew()
 {
-  Block *newBlock;
+  findNext();
+  Block * newBlock;
 
   //when create new bolck, assume findNext() function has
   //already been called, so nextBlock has already been renewed
 
-  newBlock=new Block(nextBlock,0,0,currentLevel,b);
+  newBlock = new Block( nextBlock , make_pair( 0 , 3 ) , currentLevel , b);
   return newBlock;
+}
+
+int Level::getLevel() {
+    return currentLevel;
 }
 
 void Level::levelup()

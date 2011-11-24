@@ -6,6 +6,10 @@
 #include <cassert>
 #include <iostream>
 
+#define CALL_MEMBER_FN(object,ptrToMember)  ((object).*(ptrToMember))
+
+class QuadrisGame;
+
 // A pointer to a command function. See how it's used in main.cc
 typedef void (QuadrisGame::*commandFunctPtr) ();
 

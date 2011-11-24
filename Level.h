@@ -1,5 +1,8 @@
-#include "block.h"
-#include "board.h"
+#ifndef __LEVEL_H__
+#define __LEVEL_H__
+
+#include "Block.h"
+#include "Board.h"
 #include <fstream>
 
 class Level{
@@ -19,6 +22,10 @@ class Level{
  public:
   Level(Board *b);
   Block* createNew();
+  int getLevel();
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
 };
+
+#endif
+

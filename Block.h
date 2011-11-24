@@ -3,8 +3,9 @@
 
 #define POINTS_PER_BLOCK 4
 
+#include <iostream>
 #include <utility>
-#include <functional>
+#include <vector>
 
 class Board;
 
@@ -17,7 +18,8 @@ class Block {
         std::pair<int , int> origin;
         std::pair<int , int> points [POINTS_PER_BLOCK];
         
-        void tryTransformation( std::pair<int , int> [] );
+        void tryTransformation( std::pair<int , int> [] , 
+                                std::pair<int , int> );
         void move( int , int );
         void rotate( bool );
     public:
@@ -30,6 +32,7 @@ class Block {
         void drop();
         char getType() const;
         int getLevel() const;
+        void getPoints( std::vector< std::pair< int , int > > & ) const;
         bool deleteCell();
 };
 
