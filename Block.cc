@@ -122,11 +122,12 @@ void Block::rotate( bool left ) {
             current_point.second = prev_x_coord * -1;
         }
         else {
-            current_point.first = current_point.second -1;
+            current_point.first = current_point.second * -1;
             current_point.second = prev_x_coord;
         }
 
         current_point = current_point + origin;
+        cout << current_point.first << " " << current_point.second << endl;
         transformed_points[i] = current_point;
     }
 

@@ -38,7 +38,8 @@ void Board::setActiveBlock( Block * b ) {
 
 Block* Board::getBlockPtr(pair<int,int> a)
 {
-  if( a.second >= 0 && a.second < num_rows && a.first >= 0 && a.first < 9 ) {
+  if( a.second >= 0 && a.second < num_rows 
+      && a.first >= 0 && a.first < num_columns ) {
     return blockPtr[a.second][a.first];
   }
   else {
@@ -55,8 +56,6 @@ void Board::addBlock( Block * b )
     {
       int m=block_points[i].second;
       int n=block_points[i].first;
-      cout << m << " " << n  << endl;
-      cout << blockPtr[0][0] << endl;
       blockPtr[m][n]=b;
       rowFilled[m]+=1;
     }
@@ -71,7 +70,6 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
     {
       int m=block_points[i].second;
       int n=block_points[i].first;
-      cout << m << " " << n << "X" << endl;
       blockPtr[m][n]=0;
       rowFilled[m]-=1;
     }
@@ -118,7 +116,6 @@ void Board::removeARow(int i)
       if(removed)
 	{
 	  cellLevel=blockPtr[i][k]->getLevel();
-	  //numRemovedCell+=1;
 	  delete blockPtr[i][k];
 	}
     }
