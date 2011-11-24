@@ -182,7 +182,6 @@ void Block::drop() {
             for ( int j = origin.second + 1 ; j < 18 ; ++j ) {
                 pair< int , int > current_point = 
                     make_pair( points[i].first, j );
-                cout << possible_drop << "AH" << endl;
                 if ( board->getBlockPtr( current_point ) == 0 ) {
                     possible_drop += 1;
                 }

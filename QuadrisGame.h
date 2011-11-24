@@ -17,15 +17,15 @@ class QuadrisGame {
         int score;
 
         // Command Functions
-        void rightRotate();
-        void leftRotate();
-        void moveLeft();
-        void moveRight();
-        void moveDown();
-        void drop();
-        void levelUp();
-        void levelDown();
-        void reset();
+        void rightRotate( int );
+        void leftRotate( int );
+        void moveLeft( int );
+        void moveRight( int );
+        void moveDown( int );
+        void drop( int );
+        void levelUp( int );
+        void levelDown( int );
+        void reset( int );
         // -------------------------
 
         void initialize();

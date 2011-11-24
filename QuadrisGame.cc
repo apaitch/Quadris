@@ -49,10 +49,32 @@ void QuadrisGame::blockCleared( int level ) {
 bool QuadrisGame::processInput() {
     string full_command;
     commandFunctPtr command;
+
     if ( cin >> full_command ) {
-        commandFunctPtr command = command_interpreter->findCommand( full_command );    
-        if ( command != 0 ) {
-            CALL_MEMBER_FN(*this , command)();
+        string command;
+        int multiplier = 1;
+
+        // If there is a numeric input, get multiplier
+        if ( full_command[0] >= '0' && full_command[0] <= '9' ) {
+            multiplier = 0;
+            for ( int i = 0 ; i < full_command.size() ; ++i ) {
+                char next_char = full_command[i];
+                if ( next_char >= '0' && next_char <= '9' ) {
+                   multiplier = multiplier * 10 + (next_char - 48); 
+                }
+                else {
+                    command = full_command.substr(i);
+                    break;
+                }
+            }
+        }
+        else {
+            command = full_command;
+        }
+
+        commandFunctPtr commandFn = command_interpreter->findCommand( command );    
+        if ( commandFn != 0 ) {
+            CALL_MEMBER_FN(*this , commandFn)( multiplier );
         }
         return true;
     }
@@ -81,41 +103,59 @@ void QuadrisGame::runGameLoop() {
 // -------------------------
 // Defining Command Functions
 // -------------------------
-void QuadrisGame::rightRotate() {
-    board->getActiveBlock()->rightRotate();
+void QuadrisGame::rightRotate( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->rightRotate();
+    }
 }
 
-void QuadrisGame::leftRotate() {
-    board->getActiveBlock()->leftRotate();
+void QuadrisGame::leftRotate( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->leftRotate();
+    }
 }
 
-void QuadrisGame::moveLeft() {
-    board->getActiveBlock()->moveLeft();
+void QuadrisGame::moveLeft( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->moveLeft();
+    }
 }
 
-void QuadrisGame::moveRight() {
-    board->getActiveBlock()->moveRight();
+void QuadrisGame::moveRight( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->moveRight();
+    }
 }
 
-void QuadrisGame::moveDown() {
-    board->getActiveBlock()->moveDown();
+void QuadrisGame::moveDown( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->moveDown();
+    }
 }
 
-void QuadrisGame::drop() {
-    board->getActiveBlock()->drop();
-    board->examine();
-    board->setActiveBlock( level->createNew() );
+void QuadrisGame::drop( int multiplier ) {
+    for ( int i = 0 ; i < multiplier ; ++i ) {
+        board->getActiveBlock()->drop();
+        board->examine();
+        board->setActiveBlock( level->createNew() );
+    }
 }
 
-void QuadrisGame::levelUp() {
-  level->levelup();
+void QuadrisGame::levelUp( int multiplier ) {
+  for(int times=0;times<multiplier;++times)
+    {
+      level->levelup();
+    }
 }
 
-void QuadrisGame::levelDown() {
-  level->leveldown();
+void QuadrisGame::levelDown( int multiplier ) {
+   for(int times=0;times<multiplier;++times)
+    {
+      level->leveldown();
+    }
 }
 
-void QuadrisGame::reset() {
+void QuadrisGame::reset( int multiplier ) {
     score = 0;
     delete board;
     delete level;
