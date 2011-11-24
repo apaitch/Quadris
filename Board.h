@@ -14,7 +14,7 @@ class Board {
   Block *activeBlock; //store the pointer to the active block
   int rowFilled[ num_rows ]; //record the number of filled cells in each row
   void removeARow(int); //remove a whole row
-  Block* blockPtr[ num_rows ][ num_columns ];
+  Block* blockPtr[ num_columns  ][ num_rows ];
 
 public:
   Board();

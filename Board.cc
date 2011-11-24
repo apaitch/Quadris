@@ -6,16 +6,16 @@ using namespace std;
 Board::Board()
 {
   //initial all block pointers to NULL
-  for(int i=0;i<num_rows;++i)
+  for(int x=0;x<num_columns;++x)
     {
-      for(int j=0;j<num_columns;++j)
-	blockPtr[i][j]=NULL;
+      for(int y=0;y<num_rows;++y)
+	blockPtr[x][y]=NULL;
     }
   
   //initiate the number of filled cells to be zero
   //for all rows
-  for(int i=0;i<num_rows;++i)
-    rowFilled[i]=0;
+  for(int y=0;y<num_rows;++y)
+    rowFilled[y]=0;
 }
 
 Board::~Board() {
@@ -40,7 +40,7 @@ Block* Board::getBlockPtr(pair<int,int> a)
 {
   if( a.second >= 0 && a.second < num_rows 
       && a.first >= 0 && a.first < num_columns ) {
-    return blockPtr[a.second][a.first];
+    return blockPtr[a.first][a.second];
   }
   else {
     return activeBlock + 1;
@@ -54,10 +54,10 @@ void Board::addBlock( Block * b )
 
   for(int i=0;i<4;++i)
     {
-      int m=block_points[i].second;
-      int n=block_points[i].first;
-      blockPtr[m][n]=b;
-      rowFilled[m]+=1;
+      int x=block_points[i].first;
+      int y=block_points[i].second;
+      blockPtr[x][y]=b;
+      rowFilled[y]+=1;
     }
 }
 
@@ -68,24 +68,24 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
 
   for(int i=0;i<4;++i)
     {
-      int m=block_points[i].second;
-      int n=block_points[i].first;
-      blockPtr[m][n]=0;
-      rowFilled[m]-=1;
+      int x=block_points[i].first;
+      int y=block_points[i].second;
+      blockPtr[x][y]=0;
+      rowFilled[y]-=1;
     }
 }
 
 void Board::print()
 {
-  for(int i=0;i<num_rows;++i)
+  for(int y=0;y<num_rows;++y)
     {
-      for(int j=0;j<num_columns;++j)
+      for(int x=0;x<num_columns;++x)
 	{
-          if ( blockPtr[i][j] == 0 ) {
+          if ( blockPtr[x][y] == 0 ) {
             cout << " ";
           }
           else {
-	    cout << blockPtr[i][j]->getType();
+	    cout << blockPtr[x][y]->getType();
           }
 	}
       cout<<endl;
@@ -95,43 +95,43 @@ void Board::print()
 void Board::examine()
 {
   int numRemovedRow=0; //record how many rows have be removed
-  for(int i=0;i<num_rows;++i)
+  for(int y=0;y<num_rows;++y)
     {
-      if(rowFilled[i]==num_columns)
+      if(rowFilled[y]==num_columns)
 	{
-	  numRemovedRow+=0;
-	  this->removeARow(i);
+	  numRemovedRow+=1;
+	  this->removeARow(y);
 	}
     }
 }
   
-void Board::removeARow(int i)
+void Board::removeARow(int row_to_rm)
 {
   int cellLevel;  //record the level of the removed block
 
   //call the blocks of row i to delete a cell
-  for(int k=0;k<num_columns;++k)
+  for(int x=0;x<num_columns;++x)
     {
-      bool removed=blockPtr[i][k]->deleteCell();
+      bool removed=blockPtr[x][row_to_rm]->deleteCell();
       if(removed)
 	{
-	  cellLevel=blockPtr[i][k]->getLevel();
-	  delete blockPtr[i][k];
+	  cellLevel=blockPtr[x][row_to_rm]->getLevel();
+	  delete blockPtr[x][row_to_rm];
 	}
     }
   
   //shift the rows above row i downwards
-  for(int k=i;k<14;++k)
+  for(int y=row_to_rm;y>0;--y)
     {
-      for(int m=0;m<num_columns;++m)
+      for(int x=0;x<num_columns;++x)
 	{
-	  blockPtr[k][m]=blockPtr[k+1][m];
+	  blockPtr[x][y]=blockPtr[x][y-1];
 	}
     }
 
   //for the up most row, NULL will be refilled
-  for(int m=0;m<num_columns;++m)
+  for(int x=0;x<num_columns;++x)
     {
-      blockPtr[14][m]=NULL;
+      blockPtr[x][0]=NULL;
     }
 }
