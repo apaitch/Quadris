@@ -3,7 +3,8 @@
 
 #include <utility>
 #include <vector>
-#include "Block.h"
+
+class Block;
 
 const int num_columns = 10;
 const int num_rows = 18;

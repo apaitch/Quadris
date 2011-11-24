@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Board.h"
+#include "Block.h"
 using namespace std;
 
 Board::Board()
