@@ -1,9 +1,10 @@
 #include <iostream>
 #include "Board.h"
 #include "Block.h"
+#include "QuadrisGame.h"
 using namespace std;
 
-Board::Board()
+Board::Board(QuadrisGame *game):game(game)
 {
   //initial all block pointers to NULL
   for(int x=0;x<num_columns;++x)
@@ -114,6 +115,7 @@ void Board::examine()
 	  this->removeARow(y);
 	}
     }
+  game->lineCleared(numRemovedRow);
 }
   
 void Board::removeARow(int row_to_rm)
@@ -127,6 +129,7 @@ void Board::removeARow(int row_to_rm)
       if(removed)
 	{
 	  cellLevel=blockPtr[x][row_to_rm]->getLevel();
+	  game->blockCleared(cellLevel);
 	  delete blockPtr[x][row_to_rm];
 	}
     }

@@ -5,6 +5,7 @@
 #include <vector>
 
 class Block;
+class QuadrisGame;
 
 const int num_columns = 10;
 const int num_rows = 18;
@@ -15,9 +16,10 @@ class Board {
   int rowFilled[ num_rows ]; //record the number of filled cells in each row
   void removeARow(int); //remove a whole row
   Block* blockPtr[ num_columns  ][ num_rows ];
+  QuadrisGame *game; //store the pointer to the game
 
 public:
-  Board();
+  Board(QuadrisGame *game);
   ~Board();
   Block * getActiveBlock();
   void setActiveBlock( Block * );

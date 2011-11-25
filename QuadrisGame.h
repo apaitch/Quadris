@@ -29,14 +29,14 @@ class QuadrisGame {
         // -------------------------
 
         void initialize();
-        void lineCleared( int , int );
-        void blockCleared( int );
         bool processInput();
         void draw();
     public:
         QuadrisGame();
         ~QuadrisGame();
         void runGameLoop();
+	void lineCleared( int );
+        void blockCleared( int );
 };
 
 #endif

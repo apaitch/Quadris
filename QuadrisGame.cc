@@ -5,7 +5,7 @@
 
 using namespace std;
 
-QuadrisGame::QuadrisGame() : board( new Board ) ,
+QuadrisGame::QuadrisGame() : board( new Board(this) ) ,
                              command_interpreter( new CommandTrie ) ,
                              level( new Level (board,this) ) ,
                              high_score( 0 ) ,
@@ -31,8 +31,8 @@ void QuadrisGame::initialize() {
     draw();
 }
 
-void QuadrisGame::lineCleared( int num_cleared , int level ) {
-    score += ( num_cleared + level ) * ( num_cleared + level );
+void QuadrisGame::lineCleared( int num_cleared ) {
+  score += ( num_cleared + level->getLevel() ) * ( num_cleared + level->getLevel() );
     if ( score > high_score ) {
         high_score = score;
     }
@@ -160,7 +160,7 @@ void QuadrisGame::reset( int multiplier ) {
     delete board;
     delete level;
 
-    board = new Board;
+    board = new Board(this);
     level = new Level ( board, this );
 
 }
