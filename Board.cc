@@ -6,7 +6,6 @@ using namespace std;
 
 Board::Board(QuadrisGame *game):game(game)
 {
-    cout << "YAY!" << endl;
   //initial all block pointers to NULL
   for(int x=0;x<num_columns;++x)
     {
@@ -51,7 +50,6 @@ bool Board::setActiveBlock( Block * b ) {
             break;
         }
     }
-    cout << game_over << endl;
 
     if ( ! game_over ) {
         activeBlock = b;
