@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "Level.h"
 #include "Block.h"
+#include <cstdlib>
 
 using namespace std;
 
@@ -134,10 +135,15 @@ void QuadrisGame::moveDown( int multiplier ) {
 }
 
 void QuadrisGame::drop( int multiplier ) {
+    bool game_over = false;
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->drop();
         board->examine();
-        board->setActiveBlock( level->createNew() );
+        game_over = board->setActiveBlock( level->createNew() );
+        if ( game_over ) {
+            reset( 1 );
+            break;
+        }
     }
 }
 
@@ -162,6 +168,7 @@ void QuadrisGame::reset( int multiplier ) {
 
     board = new Board(this);
     level = new Level ( board, this );
+    board->setActiveBlock( level->createNew() );
 
 }
 

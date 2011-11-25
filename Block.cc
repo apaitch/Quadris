@@ -77,8 +77,7 @@ void Block::tryTransformation( pair< int , int > transformed_points [] ,
 
     // Check for collisions
     for ( int i = 0 ; i < points_per_block ; ++i ) {
-        Block * block_at_point = board->getBlockPtr( transformed_points[i] );
-        if ( block_at_point != this && block_at_point != 0 ) {
+        if ( board->cellOccupied( this , transformed_points[i] ) ) {
             transformation_success = false;
             break;
         }
@@ -180,7 +179,7 @@ void Block::drop() {
             for ( int j = origin.second + 1 ; j < num_rows ; ++j ) {
                 pair< int , int > current_point = 
                     make_pair( points[i].first, j );
-                if ( board->getBlockPtr( current_point ) == 0 ) {
+                if ( ! board->cellOccupied( this , current_point ) ) {
                     possible_drop += 1;
                 }
                 else {
