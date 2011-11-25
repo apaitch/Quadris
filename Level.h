@@ -30,6 +30,7 @@ class Level{
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
   void setSeed(int); //set new seed for PRNG
+  void printNext();  //print the type of next block
 
 };
 

@@ -20,6 +20,9 @@ Level::Level(Board *b,QuadrisGame *game):b(b),game(game)
 {
   this->restart();
   fs.open("sequence.txt");
+
+  //find the type of the fist Block
+  findNext();
 }
 
 char Level::numCharTransfer(int i)
@@ -132,13 +135,14 @@ void Level::findNext()
 
 Block* Level::createNew()
 {
-  findNext();
   Block * newBlock;
 
-  //when create new bolck, assume findNext() function has
+  //when create new bolck, findNext() function has
   //already been called, so nextBlock has already been renewed
 
   newBlock = new Block( nextBlock , make_pair( 0 , 3 ) , currentLevel , b);
+  findNext();
+
   return newBlock;
 }
 
@@ -163,4 +167,22 @@ void Level::leveldown()
 void Level::setSeed(int a)
 {
   prng.seed(a);
+}
+
+void Level::printNext()
+{
+  if(nextBlock=='I')
+    cout<<"IIII"<<endl;
+  else if(nextBlock=='J')
+    cout<<"J"<<endl<<"JJJ"<<endl;
+  else if(nextBlock=='L')
+    cout<<"  L"<<endl<<"LLL"<<endl;
+  else if(nextBlock=='O')
+    cout<<"OO"<<endl<<"OO"<<endl;
+  else if(nextBlock=='S')
+    cout<<" SS"<<endl<<"SS"<<endl;
+  else if(nextBlock=='Z')
+    cout<<"ZZ"<<endl<<" ZZ"<<endl;
+  else if(nextBlock=='T')
+    cout<<"TTT"<<endl<<" T "<<endl;
 }

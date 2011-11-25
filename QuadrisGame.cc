@@ -89,9 +89,10 @@ void QuadrisGame::draw() {
     cout << "Hi Score: " << high_score << endl;
     cout << "----------" << endl;
     board->print();
+    cout<<"board print end"<<endl;
     cout << "----------" << endl;
-    //cout << "Next:" << endl;
-    //level->printNext();
+    cout << "Next:" << endl;
+    level->printNext();
 }
 
 void QuadrisGame::runGameLoop() {
