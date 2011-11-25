@@ -20,9 +20,6 @@ Board::Board(QuadrisGame *game):game(game)
 }
 
 Board::~Board() {
-  //delete the active block
-  delete activeBlock;
-  
   //examine each cell, if not Null, delete the cell
   //if a block is totally deleted, 
   //release the memory for the block
@@ -43,20 +40,38 @@ Block * Board::getActiveBlock() {
     return activeBlock;
 }
 
-void Board::setActiveBlock( Block * b ) {
-    activeBlock = b;
-    addBlock ( activeBlock );
+bool Board::setActiveBlock( Block * b ) {
+    vector< pair<int , int> > block_points;
+    b->getPoints( block_points );
+    bool game_over = false;
+    for ( int i = 0 ; i < points_per_block ; ++i ) {
+        if ( cellOccupied( b , block_points[i] ) ) {
+            game_over = true;
+            break;
+        }
+    }
+
+    if ( ! game_over ) {
+        activeBlock = b;
+        addBlock ( activeBlock );
+    }
+    return game_over;
 }
 
-Block* Board::getBlockPtr(pair<int,int> a)
+// Checks if the specified cell is occupied by a block different from the
+// specified block.
+bool Board::cellOccupied( Block * block , pair<int,int> point )
 {
-  if( a.second >= 0 && a.second < num_rows 
-      && a.first >= 0 && a.first < num_columns ) {
-    return blockPtr[a.first][a.second];
-  }
-  else {
-    return activeBlock + 1;
-  }
+    bool occupied = true;
+    if ( point.first >= 0 && point.first < num_columns
+         && point.second >= 0 && point.second < num_rows ) {  
+        if ( blockPtr[point.first][point.second] == 0 ||
+             blockPtr[point.first][point.second] == block ) {
+            occupied = false;
+        }
+    }
+
+    return occupied;
 }
 
 void Board::addBlock( Block * b )
@@ -64,7 +79,7 @@ void Board::addBlock( Block * b )
     vector< pair<int , int> > block_points;
     b->getPoints( block_points );
 
-  for(int i=0;i<4;++i)
+  for(int i=0;i<points_per_block;++i)
     {
       int x=block_points[i].first;
       int y=block_points[i].second;
@@ -78,7 +93,7 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
     vector< pair<int , int> > block_points;
     b->getPoints( block_points );
 
-  for(int i=0;i<4;++i)
+  for(int i=0;i<points_per_block;++i)
     {
       int x=block_points[i].first;
       int y=block_points[i].second;
@@ -152,6 +167,6 @@ void Board::removeARow(int row_to_rm)
   //for the up most row, NULL will be refilled
   for(int x=0;x<num_columns;++x)
     {
-      blockPtr[x][0]=NULL;
+      blockPtr[x][0]=0;
     }
 }

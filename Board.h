@@ -22,8 +22,8 @@ public:
   Board(QuadrisGame *game);
   ~Board();
   Block * getActiveBlock();
-  void setActiveBlock( Block * );
-  Block* getBlockPtr(std::pair<int,int>);
+  bool setActiveBlock( Block * );
+  bool cellOccupied( Block * , std::pair<int,int> );
   void addBlock( Block * );     //add a new block
   void deleteBlock( Block * );     //remove a whole block
   void print();     //print out the board
