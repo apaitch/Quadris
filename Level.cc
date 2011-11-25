@@ -119,15 +119,15 @@ void Level::findNext()
  
   if(currentLevel==0)
     {
-      //in level 0, read the next input from                                        
-      //file sequence.txt directly                                                  
+      //in level 0, read the next input from
+      //file sequence.txt directly
       fs>>nextBlock;
     }
   else
     {
-      //level 1 2 and 3                                                             
-      //will use random number generator                                            
-      //and then transfer it to char  
+      //level 1 2 and 3
+      //will use random number generator
+      //and then transfer it to char
       nextBlock=this->numCharTransfer(this->numGenerator());
     }
 
@@ -139,7 +139,6 @@ Block* Level::createNew()
 
   //when create new bolck, findNext() function has
   //already been called, so nextBlock has already been renewed
-
   newBlock = new Block( nextBlock , make_pair( 0 , 3 ) , currentLevel , b);
   findNext();
 
@@ -152,16 +151,17 @@ int Level::getLevel() {
 
 void Level::levelup()
 {
-  currentLevel+=1;
-  if(currentLevel>3)
-    currentLevel=3;
+  currentLevel += 1;
+  if ( currentLevel > max_level )
+    currentLevel = max_level;
 }
 
 void Level::leveldown()
 {
-  currentLevel-=1;
-  if(currentLevel<0)
-    currentLevel=0;
+  currentLevel -= 1;
+  if ( currentLevel < min_level ) {
+    currentLevel = min_level;
+  }
 }
 
 void Level::setSeed(int a)

@@ -1,13 +1,13 @@
 #ifndef __BLOCK_H__
 #define __BLOCK_H__
 
-#define POINTS_PER_BLOCK 4
-
 #include <iostream>
 #include <utility>
 #include <vector>
 
 class Board;
+
+const int points_per_block = 4;
 
 class Block {
     private:
@@ -16,7 +16,7 @@ class Block {
         int num_living_cells;
         int birth_level;
         std::pair<int , int> origin;
-        std::pair<int , int> points [POINTS_PER_BLOCK];
+        std::pair<int , int> points [points_per_block];
         
         void tryTransformation( std::pair<int , int> [] , 
                                 std::pair<int , int> );

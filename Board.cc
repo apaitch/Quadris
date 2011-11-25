@@ -64,7 +64,7 @@ void Board::addBlock( Block * b )
     vector< pair<int , int> > block_points;
     b->getPoints( block_points );
 
-  for(int i=0;i<4;++i)
+  for(int i=0;i<points_per_block;++i)
     {
       int x=block_points[i].first;
       int y=block_points[i].second;
@@ -78,7 +78,7 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
     vector< pair<int , int> > block_points;
     b->getPoints( block_points );
 
-  for(int i=0;i<4;++i)
+  for(int i=0;i<points_per_block;++i)
     {
       int x=block_points[i].first;
       int y=block_points[i].second;
@@ -152,6 +152,6 @@ void Board::removeARow(int row_to_rm)
   //for the up most row, NULL will be refilled
   for(int x=0;x<num_columns;++x)
     {
-      blockPtr[x][0]=NULL;
+      blockPtr[x][0]=0;
     }
 }

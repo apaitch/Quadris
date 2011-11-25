@@ -8,6 +8,9 @@ class Block;
 class Board;
 class QuadrisGame;
 
+const int max_level = 3;
+const int min_level = 0;
+
 class Level{
  private:
   int currentLevel; //stores the level currently in
