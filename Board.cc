@@ -135,6 +135,7 @@ void Board::examine()
   
 void Board::removeARow(int row_to_rm)
 {
+  assert( row_to_rm < num_rows );
   int cellLevel;  //record the level of the removed block
 
   //call the blocks of row i to delete a cell

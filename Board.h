@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <vector>
+#include <cassert>
 
 class Block;
 class QuadrisGame;
