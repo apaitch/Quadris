@@ -171,24 +171,22 @@ void Block::leftRotate() {
 void Block::drop() {
     int furthest_possible_drop = num_rows;
 
-    // Look down from each of the low points in the block to see how far can
+    // Look down from each point in the block to see how far can
     // drop.
     for( int i = 0 ; i < points_per_block ; ++i ) {
-        if ( points[i].second == origin.second ) {
-            int possible_drop = 0;
-            for ( int j = origin.second + 1 ; j < num_rows ; ++j ) {
-                pair< int , int > current_point = 
-                    make_pair( points[i].first, j );
-                if ( ! board->cellOccupied( this , current_point ) ) {
-                    possible_drop += 1;
-                }
-                else {
-                    break;
-                }
+        int possible_drop = 0;
+        for ( int j = points[i].second + 1 ; j < num_rows ; ++j ) {
+            pair< int , int > current_point = 
+                make_pair( points[i].first, j );
+            if ( ! board->cellOccupied( this , current_point ) ) {
+                possible_drop += 1;
             }
-            if ( possible_drop < furthest_possible_drop ) {
-                furthest_possible_drop = possible_drop;
+            else {
+                break;
             }
+        }
+        if ( possible_drop < furthest_possible_drop ) {
+            furthest_possible_drop = possible_drop;
         }
     }
 
