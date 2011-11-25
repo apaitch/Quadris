@@ -110,8 +110,8 @@ int Level::numGenerator()
         num=6;
         break;
       }
-      return num;
     }
+  return num;
 }
 
 void Level::findNext()

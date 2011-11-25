@@ -130,7 +130,8 @@ void Board::examine()
 	  this->removeARow(y);
 	}
     }
-  game->lineCleared(numRemovedRow);
+  if(numRemovedRow>0)
+    game->lineCleared(numRemovedRow);
 }
   
 void Board::removeARow(int row_to_rm)

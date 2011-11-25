@@ -40,10 +40,10 @@ void QuadrisGame::lineCleared( int num_cleared ) {
 }
 
 void QuadrisGame::blockCleared( int level ) {
-    score += ( level + 1 ) * (level + 1 );
-    if ( score > high_score ) {
-        high_score = score;
-    }
+  score += ( level + 1 ) * (level + 1 );
+  if ( score > high_score ) {
+    high_score = score;
+  }
 }
 
 // Take in and process one command.
