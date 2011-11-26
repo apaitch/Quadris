@@ -53,7 +53,7 @@ CommandTrieNode * CommandTrieNode::deleteChild( char value ) {
 void CommandTrie::addCommand( const string &  command , commandFunctPtr fn ) {
     CommandTrieNode * current_node = root_node;
     // Find path that matches the string, creating new nodes if necessary.
-    for ( int i = 0 ; i < command.size() ; ++i ) {
+    for ( unsigned int i = 0 ; i < command.size() ; ++i ) {
         char value = command[i];
         CommandTrieNode * next_node = current_node->findChild( value );
         if ( next_node == 0 ) {
@@ -72,7 +72,7 @@ commandFunctPtr CommandTrie::findCommand( const string & command ) const {
     commandFunctPtr return_function = 0;
     bool not_in_trie = false;
 
-    for ( int i = 0 ; i < command.size() ; ++i ) {
+    for ( unsigned int i = 0 ; i < command.size() ; ++i ) {
         char value = command[i];
         current_node = current_node->findChild( value );
         if ( current_node == 0 ) {
@@ -105,7 +105,7 @@ commandFunctPtr CommandTrie::deleteCommand( const string & command ) {
     char value_at_shared_node = 0;
     commandFunctPtr return_fn = 0;
 
-    for ( int i = 0 ; i < command.size() ; ++i ) {
+    for ( unsigned int i = 0 ; i < command.size() ; ++i ) {
         char value = command[ i ];
         CommandTrieNode * next_node = current_node->findChild( value );
         if ( next_node == 0 ) {

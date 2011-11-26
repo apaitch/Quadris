@@ -15,6 +15,7 @@ class QuadrisGame {
 
         int high_score;
         int score;
+        bool text_only;
 
         // Command Functions
         void rightRotate( int );
@@ -32,7 +33,7 @@ class QuadrisGame {
         bool processInput();
         void draw();
     public:
-        QuadrisGame();
+        explicit QuadrisGame( bool = false , int = -1 );
         ~QuadrisGame();
         void runGameLoop();
 	void lineCleared( int );

@@ -6,9 +6,11 @@
 
 using namespace std;
 
-QuadrisGame::QuadrisGame() : board( new Board(this) ) ,
+QuadrisGame::QuadrisGame( bool text_only , int seed ) 
+                           : board( new Board(this) ) ,
                              command_interpreter( new CommandTrie ) ,
-                             level( new Level (board,this) ) ,
+                             level( new Level ( board , this , seed ) ) ,
+                             text_only( text_only ) ,
                              high_score( 0 ) ,
                              score( 0 ) { initialize(); }
 

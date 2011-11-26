@@ -9,15 +9,17 @@ using namespace std;
 void Level::restart()
 {
   //reset the score record and current level
-  currentLevel=0;
+  currentLevel=1;
   prng();
 
-  //initially set seed to 0
-  seed=0;
 }
 
-Level::Level(Board *b,QuadrisGame *game):b(b),game(game)
-{
+Level::Level( Board * b , QuadrisGame * game , int seed ) 
+            : b(b) , game(game) {
+  if ( seed >= 0 ) {
+    prng.seed( seed );
+  }
+
   this->restart();
   fs.open("sequence.txt");
 
@@ -162,11 +164,6 @@ void Level::leveldown()
   if ( currentLevel < min_level ) {
     currentLevel = min_level;
   }
-}
-
-void Level::setSeed(int a)
-{
-  prng.seed(a);
 }
 
 void Level::printNext()

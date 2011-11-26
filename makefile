@@ -1,19 +1,13 @@
-OBJECT=Block.o Board.o Level.o CommandTrie.o QuadrisGame.o main.o
+CXX = g++
+CXXFLAGS = -Wall -MMD -g
+EXEC = main
+OBJECTS = Block.o Board.o Level.o CommandTrie.o QuadrisGame.o main.o
+DEPENDS = ${OBJECTS:.o=.d}
 
-main: ${OBJECT}
-	g++ -g ${OBJECT} -o main
+${EXEC} : ${OBJECTS}
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
 
-main.o: main.cc
-
-Block.o:Block.h Block.cc
-
-Board.o:Board.h Board.cc
-
-Level.o:Level.h PRNG.h Level.cc
-
-CommandTrie.o:CommandTrie.h CommandTrie.cc
-
-QuadrisGame.o:Block.h Board.h Level.h CommandTrie.h QuadrisGame.h QuadrisGame.cc
+-include ${DEPENDS}
 
 clean:
-	rm ${OBJECT}
+	rm ${OBJECTS} ${DEPENDS}

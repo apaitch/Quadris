@@ -18,7 +18,7 @@ class Level{
   Board *b; //a ptr to the board
   char nextBlock; //record the type of the next block
   PRNG prng; //random number generator
-  int seed;  //record the seed for PRNG
+  //int seed;  //record the seed for PRNG
   QuadrisGame *game; //store the pointer to the game
 
   char numCharTransfer(int i);
@@ -27,12 +27,11 @@ class Level{
   void findNext(); //find the next block's type
 
  public:
-  Level(Board *b,QuadrisGame *game);
+  Level( Board * , QuadrisGame * , int seed = -1 );
   Block* createNew();
   int getLevel();
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
-  void setSeed(int); //set new seed for PRNG
   void printNext();  //print the type of next block
 
 };
