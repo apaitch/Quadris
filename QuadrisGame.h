@@ -6,6 +6,7 @@ class Board;
 class Level;
 class Xwindow;
 class CommandTrie;
+class ScoreBoard;
 
 const int window_width = 500;
 const int window_height = 500;
@@ -15,11 +16,10 @@ class QuadrisGame {
         Board * board;
         CommandTrie * command_interpreter;
         Level * level;
+        ScoreBoard * score_board;
         Xwindow * window;
 
         bool text_only;
-        int high_score;
-        int score;
 
         // Command Functions
         void rightRotate( int );

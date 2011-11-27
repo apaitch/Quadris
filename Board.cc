@@ -119,10 +119,10 @@ void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow *
     for ( int x = 0 ; x < num_columns ; ++x ) {
         for ( int y = 0 ; y < num_rows ; ++y ) {
             if ( blockPtr[x][y] != 0 ) {
-                window->fillRectangle( x_coord + x * block_width ,
-                                       y_coord + y * block_height ,
-                                       block_width , block_height ,
-                                       block_colours[ blockPtr[x][y]->getType() ] );
+                window->fillBorderedRectangle( x_coord + x * block_width ,
+                               y_coord + y * block_height ,
+                               block_width , block_height ,
+                               block_colours[ blockPtr[x][y]->getType() ] );
             }
         }
     }

@@ -35,12 +35,12 @@ Xwindow::Xwindow( int width , int height ) {
     // Set up colours.
     XColor xcolour;
     Colormap cmap;
-    char color_vals[10][10] = { "white" , "black" , "red" , "green" ,
+    char color_vals[11][10] = { "white" , "black" , "red" , "green" ,
                                 "blue" , "cyan" , "yellow" , "magenta" ,
-                                "orange" , "brown" };
+                                "orange" , "brown" , "grey" };
 
     cmap = DefaultColormap( display,DefaultScreen( display ) );
-    for( int i = 0 ; i < 10 ; ++i ) {
+    for( int i = 0 ; i < 11 ; ++i ) {
         if ( ! XParseColor( display , cmap , color_vals[i] , &xcolour ) ) {
              cerr << "Bad colour: " << color_vals[i] << endl;
         }
@@ -69,9 +69,17 @@ Xwindow::~Xwindow() {
     XCloseDisplay( display );
 }
 
+void Xwindow::fillBorderedRectangle( int x, int y, int width, int height, int colour ) {
+    XSetForeground( display, graphics_context, colours[Black] );
+    XFillRectangle( display, window, graphics_context, x, y, width, height);
+    XSetForeground( display, graphics_context, colours[colour] );
+    XFillRectangle( display, window, graphics_context, x+2, y+2, width-4, height-4 );
+    XSetForeground( display, graphics_context, colours[Black] );
+}
+
 void Xwindow::fillRectangle( int x, int y, int width, int height, int colour ) {
     XSetForeground( display, graphics_context, colours[colour] );
-    XFillRectangle( display, window, graphics_context, x, y, width, height );
+    XFillRectangle( display, window, graphics_context, x+2, y+2, width-4, height-4 );
     XSetForeground( display, graphics_context, colours[Black] );
 }
 
