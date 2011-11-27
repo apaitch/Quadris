@@ -11,7 +11,7 @@ class CommandTrie;
 class ScoreBoard;
 
 const int window_width = 500;
-const int window_height = 500;
+const int window_height = 600;
 
 class QuadrisGame {
     private:

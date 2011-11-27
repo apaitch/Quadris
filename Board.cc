@@ -116,6 +116,7 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
 void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow * window ) {
     int block_height = height / num_rows;
     int block_width = width / num_columns;    
+    window->fillRectangle( x_coord , y_coord , width, height, Grey );
     for ( int x = 0 ; x < num_columns ; ++x ) {
         for ( int y = 0 ; y < num_rows ; ++y ) {
             if ( blockPtr[x][y] != 0 ) {

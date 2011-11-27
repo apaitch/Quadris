@@ -13,7 +13,7 @@ class Xwindow {
     unsigned long colours[11];
 
  public:
-    Xwindow(int width=500, int height=500);    // Constructor; displays the window.
+    Xwindow(int width=500, int height=600);    // Constructor; displays the window.
     ~Xwindow(); // Destructor; destroys the window.
 
     void fillBorderedRectangle(int x, int y, int width, int height, int colour=Black);

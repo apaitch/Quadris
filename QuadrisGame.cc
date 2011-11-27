@@ -17,7 +17,7 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
                              window( new Xwindow ) ,
                              text_only( text_only ) {
     min_padding = 4;
-    board_height = 500 - min_padding;
+    board_height = window_height - min_padding;
     board_width = board_height * num_columns / num_rows;
     board_posn.first = min_padding;
     board_posn.second = min_padding;
