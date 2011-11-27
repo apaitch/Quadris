@@ -4,7 +4,10 @@
 #include <utility>
 #include <vector>
 #include <cassert>
+#include <map>
+#include "Colours.h"
 
+class Xwindow;
 class Block;
 class QuadrisGame;
 
@@ -18,6 +21,7 @@ class Board {
   void removeARow(int); //remove a whole row
   Block* blockPtr[ num_columns  ][ num_rows ];
   QuadrisGame *game; //store the pointer to the game
+  std::map< char , colour > block_colours;
 
 public:
   Board(QuadrisGame *game);
@@ -28,6 +32,7 @@ public:
   void addBlock( Block * );     //add a new block
   void deleteBlock( Block * );     //remove a whole block
   void print();     //print out the board
+  void draw( int , int , int , int , Xwindow * );
   void examine();    //check if any row is completely filled
   
 };

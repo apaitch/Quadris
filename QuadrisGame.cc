@@ -2,6 +2,8 @@
 #include "Board.h"
 #include "Level.h"
 #include "Block.h"
+#include "XWindow.h"
+#include "CommandTrie.h"
 #include <cstdlib>
 
 using namespace std;
@@ -10,11 +12,13 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
                            : board( new Board(this) ) ,
                              command_interpreter( new CommandTrie ) ,
                              level( new Level ( board , this , seed ) ) ,
+                             window( new Xwindow ) ,
                              text_only( text_only ) ,
                              high_score( 0 ) ,
                              score( 0 ) { initialize(); }
 
 QuadrisGame::~QuadrisGame() {
+    delete window;
     delete board;
     delete command_interpreter;
     delete level;
@@ -31,7 +35,7 @@ void QuadrisGame::initialize() {
     command_interpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
     command_interpreter->addCommand( "restart" , &QuadrisGame::reset );
     board->setActiveBlock( level->createNew() );
-    draw();
+    output();
 }
 
 void QuadrisGame::lineCleared( int num_cleared ) {
@@ -51,7 +55,6 @@ void QuadrisGame::blockCleared( int level ) {
 // Take in and process one command.
 bool QuadrisGame::processInput() {
     string full_command;
-    commandFunctPtr command;
 
     if ( cin >> full_command ) {
         string command;
@@ -60,7 +63,7 @@ bool QuadrisGame::processInput() {
         // If there is a numeric input, get multiplier
         if ( full_command[0] >= '0' && full_command[0] <= '9' ) {
             multiplier = 0;
-            for ( int i = 0 ; i < full_command.size() ; ++i ) {
+            for ( unsigned int i = 0 ; i < full_command.size() ; ++i ) {
                 char next_char = full_command[i];
                 if ( next_char >= '0' && next_char <= '9' ) {
                    multiplier = multiplier * 10 + (next_char - 48); 
@@ -86,7 +89,7 @@ bool QuadrisGame::processInput() {
     }
 }
 
-void QuadrisGame::draw() {
+void QuadrisGame::print() {
     cout << "Level:   " << level->getLevel() << endl;
     cout << "Score:   " << score << endl;
     cout << "Hi Score: " << high_score << endl;
@@ -97,9 +100,23 @@ void QuadrisGame::draw() {
     level->printNext();
 }
 
+void QuadrisGame::draw() {
+    int board_height = 500;
+    int board_width = 500 * num_columns / num_rows;
+    window->fillRectangle( 0 , 0 , window_width , window_height );
+    board->draw( 0 , 0 , board_width , board_height , window );
+}
+
+void QuadrisGame::output() {
+    print();
+    if ( ! text_only ) {
+        draw();
+    }
+}
+
 void QuadrisGame::runGameLoop() {
     while ( processInput() ) {
-        draw();
+        output();
     }
 }
 
@@ -171,6 +188,7 @@ void QuadrisGame::reset( int multiplier ) {
     board = new Board(this);
     level = new Level ( board, this );
     board->setActiveBlock( level->createNew() );
+    output();
 
 }
 

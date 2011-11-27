@@ -18,8 +18,8 @@ pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
 // ---------------------------------------------------
 
 Block::Block( char type , pair< int, int > create_point , int level , Board * board )
-                : type( type ), origin( create_point ), 
-                  birth_level(level) , board( board ) , num_living_cells(4) {
+                : board( board ) , type( type ), origin( create_point ), 
+                  birth_level(level) , num_living_cells(4) {
 
     pair< int , int > x_increment = make_pair( 1 , 0 );
     pair< int , int > y_increment = make_pair( 0 , 1 );

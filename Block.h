@@ -4,6 +4,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <map>
 
 class Board;
 
@@ -13,9 +14,9 @@ class Block {
     private:
         Board * board;
         char type;
-        int num_living_cells;
-        int birth_level;
         std::pair<int , int> origin;
+        int birth_level;
+        int num_living_cells;
         std::pair<int , int> points [points_per_block];
         
         void tryTransformation( std::pair<int , int> [] , 

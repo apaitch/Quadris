@@ -2,6 +2,8 @@
 #include "Board.h"
 #include "Block.h"
 #include "QuadrisGame.h"
+#include "XWindow.h"
+
 using namespace std;
 
 Board::Board(QuadrisGame *game):game(game)
@@ -15,8 +17,17 @@ Board::Board(QuadrisGame *game):game(game)
   
   //initiate the number of filled cells to be zero
   //for all rows
-  for(int y=0;y<num_rows;++y)
+  for(int y=0;y<num_rows;++y) {
     rowFilled[y]=0;
+  }
+
+  block_colours['I'] = Blue;
+  block_colours['J'] = Red;
+  block_colours['L'] = Green;
+  block_colours['S'] = Orange;
+  block_colours['Z'] = Cyan;
+  block_colours['T'] = Yellow;
+  block_colours['O'] = Brown;
 }
 
 Board::~Board() {
@@ -99,6 +110,21 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
       int y=block_points[i].second;
       blockPtr[x][y]=0;
       rowFilled[y]-=1;
+    }
+}
+
+void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow * window ) {
+    int block_height = height / num_rows;
+    int block_width = width / num_columns;    
+    for ( int x = 0 ; x < num_columns ; ++x ) {
+        for ( int y = 0 ; y < num_rows ; ++y ) {
+            if ( blockPtr[x][y] != 0 ) {
+                window->fillRectangle( x_coord + x * block_width ,
+                                       y_coord + y * block_height ,
+                                       block_width , block_height ,
+                                       block_colours[ blockPtr[x][y]->getType() ] );
+            }
+        }
     }
 }
 
