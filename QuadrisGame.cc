@@ -14,8 +14,12 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
                              command_interpreter( new CommandTrie ) ,
                              level( new Level ( board , this , seed ) ) ,
                              score_board( new ScoreBoard ( level->getLevel() ) ) ,
-                             window( new Xwindow ) ,
+                             window( 0 ) ,
                              text_only( text_only ) {
+    if ( ! text_only ) {
+        window = new Xwindow;
+    }
+
     min_padding = 4;
     board_height = window_height - min_padding;
     board_width = board_height * num_columns / num_rows;
@@ -25,6 +29,7 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
     initialize(); }
 
 QuadrisGame::~QuadrisGame() {
+
     delete window;
     delete board;
     delete command_interpreter;
