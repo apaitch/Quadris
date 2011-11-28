@@ -32,6 +32,7 @@ class Block {
         void moveDown();
         void rightRotate();
         void leftRotate();
+	int calculateDrop();
         void drop();
         char getType() const;
         colour getColour() const;
