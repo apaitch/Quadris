@@ -29,20 +29,24 @@ Level::Level( Board * b , QuadrisGame * game , int seed )
 
 char Level::numCharTransfer(int i)
 {
-  if(i==0)
-    return 'I';
-  else if(i==1)
-    return 'J';
-  else if(i==2)
-    return 'L';
-  else if(i==3)
-    return 'O';
-  else if(i==4)
-    return 'S';
-  else if(i==5)
-    return 'Z';
-  else if(i==6)
-    return 'T';
+  char return_char = 0;
+  switch ( i ) {
+    case 0 : return_char = 'I';
+             break;
+    case 1 : return_char = 'J';
+             break;
+    case 2 : return_char = 'L';
+             break;
+    case 3 : return_char = 'O';
+             break;
+    case 4 : return_char = 'S';
+             break;
+    case 5 : return_char = 'Z';
+             break;
+    case 6 : return_char = 'T';
+  }
+
+  return return_char;
 }
 
 int Level::numGenerator()

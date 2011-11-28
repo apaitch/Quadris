@@ -20,14 +20,6 @@ Board::Board(QuadrisGame *game):game(game)
   for(int y=0;y<num_rows;++y) {
     rowFilled[y]=0;
   }
-
-  block_colours['I'] = Blue;
-  block_colours['J'] = Red;
-  block_colours['L'] = Green;
-  block_colours['S'] = Orange;
-  block_colours['Z'] = Cyan;
-  block_colours['T'] = Yellow;
-  block_colours['O'] = Brown;
 }
 
 Board::~Board() {
@@ -123,7 +115,7 @@ void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow *
                 window->fillBorderedRectangle( x_coord + x * block_width ,
                                y_coord + y * block_height ,
                                block_width , block_height ,
-                               block_colours[ blockPtr[x][y]->getType() ] );
+                               blockPtr[x][y]->getColour() );
             }
         }
     }

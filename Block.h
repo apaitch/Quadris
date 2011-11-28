@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include "Colours.h"
 
 class Board;
 
@@ -14,6 +15,7 @@ class Block {
     private:
         Board * board;
         char type;
+        colour the_colour;
         std::pair<int , int> origin;
         int birth_level;
         int num_living_cells;
@@ -32,6 +34,7 @@ class Block {
         void leftRotate();
         void drop();
         char getType() const;
+        colour getColour() const;
         int getLevel() const;
         void getPoints( std::vector< std::pair< int , int > > & ) const;
         bool deleteCell();

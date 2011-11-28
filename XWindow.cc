@@ -83,7 +83,8 @@ void Xwindow::fillRectangle( int x, int y, int width, int height, int colour ) {
 
 void Xwindow::drawString( int x, int y, string msg, int colour ) {
     XSetForeground( display, graphics_context, colours[colour] );
-    XDrawString( display, window, DefaultGC( display, screen_num ), x, y, msg.c_str(), msg.length() );
+    //XDrawString( display, window, DefaultGC( display, screen_num ), x, y, msg.c_str(), msg.length() );
+    XDrawString( display, window, graphics_context, x, y, msg.c_str(), msg.length() );
     XSetForeground( display, graphics_context, colours[Black] );
 }
 

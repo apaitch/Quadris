@@ -30,41 +30,49 @@ Block::Block( char type , pair< int, int > create_point , int level , Board * bo
             points[1] = origin - y_increment + x_increment;
             points[2] = origin + x_increment;
             points[3] = origin + 2 * x_increment;
+            the_colour = Blue;
             break;
         case 'T' :
             points[0] = origin - y_increment;
             points[1] = origin - y_increment + x_increment;
             points[2] = origin - y_increment + 2 * x_increment;
-            points[3] = origin + x_increment; break;
+            points[3] = origin + x_increment; 
+            the_colour = Orange;
+            break;
         case 'I' :
             points[0] = origin;
             points[1] = origin + x_increment;
             points[2] = origin + 2 * x_increment;
             points[3] = origin + 3 * x_increment;
+            the_colour = Red;
             break;
         case 'J' :
             points[0] = origin - y_increment;
             points[1] = origin;
             points[2] = origin + x_increment;
             points[3] = origin + 2 * x_increment;
+            the_colour = Yellow;
             break;
         case 'L' :
             points[0] = origin;
             points[1] = origin + x_increment;
             points[2] = origin + 2 * x_increment;
             points[3] = origin + 2 * x_increment - y_increment;
+            the_colour = Green;
             break;
         case 'O' :
             points[0] = origin - y_increment;
             points[1] = origin;
             points[2] = origin - y_increment + x_increment;
             points[3] = origin + x_increment;
+            the_colour = Brown;
             break;
         case 'S' :
             points[0] = origin;
             points[1] = origin + x_increment;
             points[2] = origin + x_increment - y_increment;
             points[3] = origin + 2 * x_increment - y_increment;
+            the_colour = Cyan;
     }
 }
 
@@ -197,6 +205,10 @@ char Block::getType() const {
     return type;
 }
 
+colour Block::getColour() const {
+    return the_colour;
+}
+
 int Block::getLevel() const {
     return birth_level;
 }
@@ -209,4 +221,3 @@ bool Block::deleteCell() {
     num_living_cells -= 1;
     return (num_living_cells == 0) ? true : false;
 }
-

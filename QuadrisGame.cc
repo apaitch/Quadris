@@ -21,11 +21,15 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
     }
 
     min_padding = 4;
-    board_height = window_height - min_padding;
+    board_height = window_height - 2 * min_padding;
     board_width = board_height * num_columns / num_rows;
     board_posn.first = min_padding;
     board_posn.second = min_padding;
 
+    score_board_posn.first = 2 * min_padding + board_width;
+    score_board_posn.second = min_padding;
+    score_board_width = window_width - board_width - 3 * min_padding;
+    score_board_height = window_height / 5;
     initialize(); }
 
 QuadrisGame::~QuadrisGame() {
@@ -107,7 +111,14 @@ void QuadrisGame::print() {
 
 void QuadrisGame::draw() {
     window->fillRectangle( 0 , 0 , window_width , window_height );
-    board->draw( board_posn.first , board_posn.second , board_width , board_height , window );
+
+    board->draw( board_posn.first , board_posn.second , 
+                 board_width , board_height , window );
+
+    score_board->draw( score_board_posn.first , 
+                       score_board_posn.second ,
+                       score_board_width , score_board_height , 
+                       window );
 }
 
 void QuadrisGame::output() {

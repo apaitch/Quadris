@@ -1,6 +1,8 @@
 #include "ScoreBoard.h"
 #include "XWindow.h"
+#include "Colours.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -36,6 +38,24 @@ void ScoreBoard::print() {
     cout << "Hi Score:  " << high_score << endl;
 }
 
-void ScoreBoard::draw( Xwindow * window , int x_coord , int y_coord ,
-                       int width , int height ) {
+void ScoreBoard::draw( int x_coord , int y_coord ,
+                       int width , int height , Xwindow * window ) {
+    ostringstream sstream;
+    sstream << "LEVEL: " << current_level;
+    window->drawString( x_coord + 5 , y_coord + 22 , sstream.str() , Yellow );
+    sstream.str("");
+    sstream << "SCORE: " << current_score;
+    window->drawString( x_coord + 5 , y_coord + 42 , sstream.str() , Yellow );
+    sstream.str("");
+    sstream << "HI SCORE: " << high_score;
+    window->drawString( x_coord + 5 , y_coord + 62 , sstream.str() , Yellow );
+
+    /*
+    window->fillRectangle( x_coord, y_coord, width, height , Grey );
+    window->drawString( x_coord + 5 , y_coord + 22 , "LEVEL: 1" , Yellow );
+    window->drawString( x_coord + 5 , y_coord + 42 , "SCORE: 10" , Yellow );
+    window->drawString( x_coord + 5 , y_coord + 62 , "HI SCORE: 10" , Yellow );
+    */
+
 }
+

@@ -16,7 +16,7 @@ class ScoreBoard {
         void resetScore();
         void setLevel( int );
         void print();
-        void draw( Xwindow * , int , int , int , int );
+        void draw( int , int , int , int , Xwindow * );
         
 };
 

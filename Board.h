@@ -4,7 +4,6 @@
 #include <utility>
 #include <vector>
 #include <cassert>
-#include <map>
 #include "Colours.h"
 
 class Xwindow;
@@ -21,7 +20,6 @@ class Board {
   void removeARow(int); //remove a whole row
   Block* blockPtr[ num_columns  ][ num_rows ];
   QuadrisGame *game; //store the pointer to the game
-  std::map< char , colour > block_colours;
 
 public:
   Board(QuadrisGame *game);
