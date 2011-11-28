@@ -27,17 +27,20 @@ class Block {
         void rotate( bool );
     public:
         Block ( char, std::pair<int , int> , int , Board * );
+        bool deleteCell();
+
+        // Movement interface
         void moveLeft();
         void moveRight();
         void moveDown();
         void rightRotate();
         void leftRotate();
         void drop();
+
         char getType() const;
         colour getColour() const;
         int getLevel() const;
         void getPoints( std::vector< std::pair< int , int > > & ) const;
-        bool deleteCell();
 };
 
 #endif

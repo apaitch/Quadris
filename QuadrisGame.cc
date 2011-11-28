@@ -18,7 +18,7 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
                              text_only( text_only ) {
     if ( ! text_only ) {
         window = new Xwindow;
-    }
+    } // if
 
     min_padding = 4;
     board_height = window_height - 2 * min_padding;
@@ -30,7 +30,8 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
     score_board_posn.second = min_padding;
     score_board_width = window_width - board_width - 3 * min_padding;
     score_board_height = window_height / 5;
-    initialize(); }
+    initialize(); 
+} // QuadrisGame 
 
 QuadrisGame::~QuadrisGame() {
 
@@ -39,7 +40,7 @@ QuadrisGame::~QuadrisGame() {
     delete command_interpreter;
     delete level;
     delete score_board;
-}
+} 
 
 void QuadrisGame::initialize() {
     command_interpreter->addCommand( "left" , &QuadrisGame::moveLeft );
@@ -53,7 +54,7 @@ void QuadrisGame::initialize() {
     command_interpreter->addCommand( "restart" , &QuadrisGame::reset );
     board->setActiveBlock( level->createNew() );
     output();
-}
+} // initialize()
 
 void QuadrisGame::lineCleared( int num_cleared ) {
     score_board->linesCleared( num_cleared );
@@ -78,27 +79,27 @@ bool QuadrisGame::processInput() {
                 char next_char = full_command[i];
                 if ( next_char >= '0' && next_char <= '9' ) {
                    multiplier = multiplier * 10 + (next_char - 48); 
-                }
+                } // if
                 else {
                     command = full_command.substr(i);
                     break;
-                }
-            }
-        }
+                } // else
+            } // for
+        } // if
         else {
             command = full_command;
-        }
+        } // else
 
         commandFunctPtr commandFn = command_interpreter->findCommand( command );    
         if ( commandFn != 0 ) {
             CALL_MEMBER_FN(*this , commandFn)( multiplier );
-        }
+        } // if
         return true;
-    }
+    } // if
     else {
         return false;
-    }
-}
+    } // else
+} // processInput()
 
 void QuadrisGame::print() {
     score_board->print();
@@ -125,13 +126,13 @@ void QuadrisGame::output() {
     print();
     if ( ! text_only ) {
         draw();
-    }
+    } // if
 }
 
 void QuadrisGame::runGameLoop() {
     while ( processInput() ) {
         output();
-    }
+    } // while
 }
 
 // -------------------------
@@ -140,31 +141,31 @@ void QuadrisGame::runGameLoop() {
 void QuadrisGame::rightRotate( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->rightRotate();
-    }
+    } // for
 }
 
 void QuadrisGame::leftRotate( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->leftRotate();
-    }
+    } // for
 }
 
 void QuadrisGame::moveLeft( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveLeft();
-    }
+    } // for
 }
 
 void QuadrisGame::moveRight( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveRight();
-    }
+    } // for
 }
 
 void QuadrisGame::moveDown( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveDown();
-    }
+    } // for
 }
 
 void QuadrisGame::drop( int multiplier ) {
@@ -176,21 +177,21 @@ void QuadrisGame::drop( int multiplier ) {
         if ( game_over ) {
             reset( 1 );
             break;
-        }
-    }
+        } // if
+    } // for
 }
 
 void QuadrisGame::levelUp( int multiplier ) {
     for( int times = 0; times < multiplier ; ++times ) {
         level->levelup();
-    }
+    } // for
     score_board->setLevel( level->getLevel() );
 }
 
 void QuadrisGame::levelDown( int multiplier ) {
     for( int times = 0 ; times < multiplier ; ++times ) {
         level->leveldown();
-    }
+    } // for
     score_board->setLevel( level->getLevel() );
 }
 
@@ -206,7 +207,7 @@ void QuadrisGame::reset( int multiplier ) {
     board->setActiveBlock( level->createNew() );
     output();
 
-}
+} // reset
 
 // -------------------------
 // End of Command Functions

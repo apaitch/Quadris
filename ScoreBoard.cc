@@ -14,7 +14,7 @@ void ScoreBoard::blockCleared( int level ) {
   current_score += ( level + 1 ) * (level + 1 );
   if ( current_score > high_score ) {
     high_score = current_score;
-  }
+  } // if
 }
 
 void ScoreBoard::linesCleared( int num_lines ) {
@@ -22,7 +22,7 @@ void ScoreBoard::linesCleared( int num_lines ) {
              ( num_lines + current_level );
     if ( current_score > high_score ) {
         high_score = current_score;
-    }
+    } // if
 }
 
 void ScoreBoard::resetScore() {
@@ -49,13 +49,5 @@ void ScoreBoard::draw( int x_coord , int y_coord ,
     sstream.str("");
     sstream << "HI SCORE: " << high_score;
     window->drawString( x_coord + 5 , y_coord + 62 , sstream.str() , Yellow );
-
-    /*
-    window->fillRectangle( x_coord, y_coord, width, height , Grey );
-    window->drawString( x_coord + 5 , y_coord + 22 , "LEVEL: 1" , Yellow );
-    window->drawString( x_coord + 5 , y_coord + 42 , "SCORE: 10" , Yellow );
-    window->drawString( x_coord + 5 , y_coord + 62 , "HI SCORE: 10" , Yellow );
-    */
-
 }
 

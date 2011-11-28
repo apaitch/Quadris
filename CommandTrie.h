@@ -31,12 +31,14 @@ class CommandTrie {
     public:
         CommandTrie() : root_node( new CommandTrieNode ) { };
         ~CommandTrie() { delete root_node; };
+
+        void addCommand( const std::string & , commandFunctPtr );
+        void changeCommand( const std::string & , const std::string & );
+        commandFunctPtr deleteCommand( const std::string & );
+
         // findCommand and deleteCommand returns pointers to the functions
         // containing the command in question.
-        void addCommand( const std::string & , commandFunctPtr );
         commandFunctPtr findCommand( const std::string & ) const;
-        commandFunctPtr deleteCommand( const std::string & );
-        void changeCommand( const std::string & , const std::string & );
 };
 
 #endif

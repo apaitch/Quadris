@@ -14,7 +14,7 @@ Xwindow::Xwindow( int width , int height ) {
     if ( display == NULL ) {
         cerr << "Cannot open display" << endl;
         exit( 1 );
-    }
+    } // if
     screen_num = DefaultScreen( display );
 
     window = XCreateSimpleWindow( display, 
@@ -43,12 +43,12 @@ Xwindow::Xwindow( int width , int height ) {
     for( int i = 0 ; i < 11 ; ++i ) {
         if ( ! XParseColor( display , cmap , color_vals[i] , &xcolour ) ) {
              cerr << "Bad colour: " << color_vals[i] << endl;
-        }
+        } // if
         if ( ! XAllocColor( display , cmap , &xcolour ) ) {
              cerr << "Bad colour: " << color_vals[i] << endl;
-        }
+        } // if
         colours[i] = xcolour.pixel;
-    }
+    } // for
 
     XSetForeground( display , graphics_context , colours[Black] );
 
@@ -62,7 +62,7 @@ Xwindow::Xwindow( int width , int height ) {
     XSynchronize( display , True );
 
     usleep( 1000 );
-}
+} // Xwindow
 
 Xwindow::~Xwindow() {
     XFreeGC( display , graphics_context );
@@ -83,7 +83,6 @@ void Xwindow::fillRectangle( int x, int y, int width, int height, int colour ) {
 
 void Xwindow::drawString( int x, int y, string msg, int colour ) {
     XSetForeground( display, graphics_context, colours[colour] );
-    //XDrawString( display, window, DefaultGC( display, screen_num ), x, y, msg.c_str(), msg.length() );
     XDrawString( display, window, graphics_context, x, y, msg.c_str(), msg.length() );
     XSetForeground( display, graphics_context, colours[Black] );
 }

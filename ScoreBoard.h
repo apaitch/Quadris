@@ -11,10 +11,13 @@ class ScoreBoard {
 
     public:
         ScoreBoard( int );
+        void resetScore();
+
         void blockCleared( int );
         void linesCleared( int );
-        void resetScore();
+
         void setLevel( int );
+
         void print();
         void draw( int , int , int , int , Xwindow * );
         

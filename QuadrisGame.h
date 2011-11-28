@@ -50,6 +50,7 @@ class QuadrisGame {
 
         void initialize();
         bool processInput();
+
         void print();
         void draw();
         void output();

@@ -6,15 +6,15 @@ using namespace std;
 // Overriding operators for points -------------------
 pair< int , int > operator+( const pair<int,int> & p1 , const pair<int,int> & p2 ) {
     return make_pair( p1.first + p2.first , p1.second + p2.second );
-}
+} // operator+
 
 pair< int , int > operator-( const pair<int,int> & p1 , const pair<int,int> & p2 ) {
     return make_pair( p1.first - p2.first , p1.second - p2.second );
-}
+} // operator-
 
 pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
     return make_pair( i * p1.first , i * p1.second );
-}
+} // operator*
 // ---------------------------------------------------
 
 Block::Block( char type , pair< int, int > create_point , int level , Board * board )
@@ -73,8 +73,8 @@ Block::Block( char type , pair< int, int > create_point , int level , Board * bo
             points[2] = origin + x_increment - y_increment;
             points[3] = origin + 2 * x_increment - y_increment;
             the_colour = Cyan;
-    }
-}
+    } // switch
+} // Block
 
 // A transformation (e.g. rotate, move) generates an array of transformed points
 // and passes it to tryTransformation(). If the transformation doesn't result in
@@ -88,18 +88,18 @@ void Block::tryTransformation( pair< int , int > transformed_points [] ,
         if ( board->cellOccupied( this , transformed_points[i] ) ) {
             transformation_success = false;
             break;
-        }
-    }
+        } // if
+    } // for
 
     if ( transformation_success ) {
         board->deleteBlock( this );
         origin = transformed_origin;
         for ( int i = 0 ; i < points_per_block ; ++i ) {
             points[i] = transformed_points[i];
-        }
+        } // for
         board->addBlock( this );
-    }
-}
+    } // if
+} // tryTransformation()
 
 // Moves each point in block by specified x and y coordinates.
 void Block::move( int x , int y ) {
@@ -109,9 +109,9 @@ void Block::move( int x , int y ) {
     for ( int i = 0 ; i < points_per_block ; ++i ) {
         transformed_points[i] 
             = make_pair( points[i].first + x , points[i].second + y );
-    }
+    } // for
     tryTransformation( transformed_points , transformed_origin );
-}
+} // move()
 
 // Rotates block right if "left" is false.
 void Block::rotate( bool left ) {
@@ -126,15 +126,15 @@ void Block::rotate( bool left ) {
         if ( left ) {
             current_point.first = current_point.second;
             current_point.second = prev_x_coord * -1;
-        }
+        } // if
         else {
             current_point.first = current_point.second * -1;
             current_point.second = prev_x_coord;
-        }
+        } // else
 
         current_point = current_point + origin;
         transformed_points[i] = current_point;
-    }
+    } // for
 
     // Shift the transformed points in line with the origin to get final result
     // of transformation
@@ -144,37 +144,37 @@ void Block::rotate( bool left ) {
         if ( x_coord_diff > 0 ) {
             for ( int j = 0 ; j < points_per_block ; ++j ) {
                 transformed_points[j].first += x_coord_diff;
-            }
-        }
+            } // for
+        } // if
         if ( y_coord_diff > 0 ) {
             for ( int j = 0 ; j < points_per_block ; ++j ) {
                 transformed_points[j].second -= y_coord_diff;
-            }
-        }
-    }
+            } // for
+        } // if
+    } // for
 
     tryTransformation( transformed_points , origin );
-}
+} // rotate() 
 
 void Block::moveLeft() {
     move( -1 , 0 );
-}
+} 
 
 void Block::moveRight() {
     move ( 1 , 0 );
-}
+} 
 
 void Block::moveDown() {
     move ( 0 , 1 );
-}
+} 
 
 void Block::rightRotate() {
     rotate( false );
-}
+} 
 
 void Block::leftRotate() {
     rotate( true );
-}
+} 
 
 void Block::drop() {
     int furthest_possible_drop = num_rows;
@@ -188,26 +188,26 @@ void Block::drop() {
                 make_pair( points[i].first, j );
             if ( ! board->cellOccupied( this , current_point ) ) {
                 possible_drop += 1;
-            }
+            } // if
             else {
                 break;
-            }
-        }
+            } // else
+        } // for
         if ( possible_drop < furthest_possible_drop ) {
             furthest_possible_drop = possible_drop;
-        }
-    }
+        } // if
+    } // for
 
     move ( 0 , furthest_possible_drop );
-}
+} // drop() 
 
 char Block::getType() const {
     return type;
-}
+} 
 
 colour Block::getColour() const {
     return the_colour;
-}
+} 
 
 int Block::getLevel() const {
     return birth_level;
