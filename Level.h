@@ -11,6 +11,8 @@ class QuadrisGame;
 const int max_level = 3;
 const int min_level = 0;
 
+class Xwindow;
+
 class Level{
  private:
   int currentLevel; //stores the level currently in
@@ -33,6 +35,7 @@ class Level{
   void levelup();     // increase the level by 1
   void leveldown();    //decrease the level by 1
   void printNext();  //print the type of next block
+  void drawNext(Xwindow *); //draw the next block in window
 
 };
 

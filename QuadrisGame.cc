@@ -18,6 +18,8 @@ QuadrisGame::QuadrisGame( bool text_only , int seed )
                              text_only( text_only ) {
     if ( ! text_only ) {
         window = new Xwindow;
+	smallWindow=new Xwindow(200,200);
+
     }
 
     min_padding = 4;
@@ -119,6 +121,9 @@ void QuadrisGame::draw() {
                        score_board_posn.second ,
                        score_board_width , score_board_height , 
                        window );
+
+    level->drawNext(smallWindow);
+    
 }
 
 void QuadrisGame::output() {

@@ -19,8 +19,8 @@ class QuadrisGame {
         CommandTrie * command_interpreter;
         Level * level;
         ScoreBoard * score_board;
-        Xwindow * window;
-
+        Xwindow * window;  //display the main board
+	Xwindow * smallWindow;  //display the next block
         bool text_only;
 
         // Variables for drawing
