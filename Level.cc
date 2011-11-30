@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "Board.h"
 #include "QuadrisGame.h"
+#include "XWindow.h"
 
 using namespace std;
 
@@ -168,4 +169,59 @@ void Level::printNext() {
     cout<<"ZZ"<<endl<<" ZZ"<<endl;
   else if(nextBlock=='T')
     cout<<"TTT"<<endl<<" T "<<endl;
+}
+
+void Level::drawNext(Xwindow *smallWindow)
+{
+  smallWindow->fillRectangle( 0,0 , 200, 200, Grey );
+
+   if(nextBlock=='I')
+     {
+        smallWindow->fillBorderedRectangle( 0,0 ,50 ,50 ,Red );
+	smallWindow->fillBorderedRectangle( 50,0 ,50 ,50 ,Red );
+	smallWindow->fillBorderedRectangle( 100,0 ,50 ,50 ,Red );
+        smallWindow->fillBorderedRectangle( 150,0 ,50 ,50 ,Red );
+     }
+  else if(nextBlock=='J')
+    {
+       smallWindow->fillBorderedRectangle( 0,0 ,50 ,50 ,Yellow );
+       smallWindow->fillBorderedRectangle( 0,50 ,50 ,50 ,Yellow );
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Yellow );
+       smallWindow->fillBorderedRectangle( 100,50 ,50 ,50 ,Yellow );
+    }
+  else if(nextBlock=='L')
+    {
+       smallWindow->fillBorderedRectangle( 100,0 ,50 ,50 ,Green);
+       smallWindow->fillBorderedRectangle( 0,50 ,50 ,50 ,Green);
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Green);
+       smallWindow->fillBorderedRectangle( 100,50 ,50 ,50 ,Green);
+    }
+  else if(nextBlock=='O')
+    {
+       smallWindow->fillBorderedRectangle( 0,0 ,50 ,50 ,Brown);
+       smallWindow->fillBorderedRectangle( 50,0 ,50 ,50 ,Brown);
+       smallWindow->fillBorderedRectangle( 0,50 ,50 ,50 ,Brown);
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Brown);
+    }
+  else if(nextBlock=='S')
+    {
+       smallWindow->fillBorderedRectangle( 50,0 ,50 ,50 ,Cyan );
+       smallWindow->fillBorderedRectangle( 100,0 ,50 ,50 ,Cyan );
+       smallWindow->fillBorderedRectangle( 0,50 ,50 ,50 ,Cyan );
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Cyan );
+    }
+  else if(nextBlock=='Z')
+    {
+       smallWindow->fillBorderedRectangle( 0,0 ,50 ,50 ,Blue );
+       smallWindow->fillBorderedRectangle( 50,0 ,50 ,50 ,Blue );
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Blue );
+       smallWindow->fillBorderedRectangle( 100,50 ,50 ,50 ,Blue );
+    }
+  else if(nextBlock=='T')
+    {
+       smallWindow->fillBorderedRectangle( 0,0 ,50 ,50 ,Orange );
+       smallWindow->fillBorderedRectangle( 50,0 ,50 ,50 ,Orange );
+       smallWindow->fillBorderedRectangle( 100,0 ,50 ,50 ,Orange );
+       smallWindow->fillBorderedRectangle( 50,50 ,50 ,50 ,Orange );
+    }
 }

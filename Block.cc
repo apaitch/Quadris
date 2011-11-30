@@ -176,8 +176,10 @@ void Block::leftRotate() {
     rotate( true );
 } 
 
-void Block::drop() {
-    int furthest_possible_drop = num_rows;
+//helper function to see how much a block can drop
+int Block::calculateDrop()
+{
+   int furthest_possible_drop = num_rows;
 
     // Look down from each point in the block to see how far can
     // drop.
@@ -195,11 +197,15 @@ void Block::drop() {
         } // for
         if ( possible_drop < furthest_possible_drop ) {
             furthest_possible_drop = possible_drop;
-        } // if
-    } // for
+        }
+    }
+    return furthest_possible_drop;
+}
+void Block::drop() {
 
-    move ( 0 , furthest_possible_drop );
-} // drop() 
+  int furthest_possible_drop=this->calculateDrop();
+  move ( 0 , furthest_possible_drop );
+}
 
 char Block::getType() const {
     return type;

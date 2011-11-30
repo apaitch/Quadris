@@ -108,27 +108,59 @@ void Board::deleteBlock( Block * b ) //used when delete the whole block
 void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow * window ) {
     int block_height = height / num_rows;
     int block_width = width / num_columns;    
+    
+    //find out the current position of the current block
+    vector<pair<int,int> > pos;
+    activeBlock->getPoints(pos);
+    //find out how much the block could drop
+    int maxdrop=activeBlock->calculateDrop();
+
     window->fillRectangle( x_coord , y_coord , width, height, Grey );
     for ( int x = 0 ; x < num_columns ; ++x ) {
         for ( int y = 0 ; y < num_rows ; ++y ) {
             if ( blockPtr[x][y] != 0 ) {
                 window->fillBorderedRectangle( x_coord + x * block_width ,
-                               y_coord + y * block_height ,
-                               block_width , block_height ,
-                               blockPtr[x][y]->getColour() );
+					       y_coord + y * block_height ,
+					       block_width , block_height ,
+					       blockPtr[x][y]->getColour() );
             }
+	    else if( (x==pos[0].first && y==pos[0].second+maxdrop)
+		     || (x==pos[1].first && y==pos[1].second+maxdrop)
+		     ||(x==pos[2].first && y==pos[2].second+maxdrop)
+		     ||(x==pos[3].first && y==pos[3].second+maxdrop) )
+	      {
+		window->fillBorderedRectangle( x_coord + x * block_width ,
+					       y_coord + y * block_height ,
+					       block_width , block_height ,
+					       White);
+	      }
         }
     }
 }
 
 void Board::print()
 {
+  //find out the current position of the current block
+  vector<pair<int,int> > pos;
+  activeBlock->getPoints(pos);
+  //find out how much the block could drop
+  int maxdrop=activeBlock->calculateDrop();
+
   for(int y=0;y<num_rows;++y)
     {
       for(int x=0;x<num_columns;++x)
 	{
+	  
           if ( blockPtr[x][y] == 0 ) {
-            cout << " ";
+	    if( (x==pos[0].first && y==pos[0].second+maxdrop)
+		|| (x==pos[1].first && y==pos[1].second+maxdrop)
+		||(x==pos[2].first && y==pos[2].second+maxdrop)
+		||(x==pos[3].first && y==pos[3].second+maxdrop) )
+	    {
+	      cout<<"*";
+	    }
+            else
+	      cout << " ";
           }
           else {
 	    cout << blockPtr[x][y]->getType();
