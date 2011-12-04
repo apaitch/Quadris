@@ -114,7 +114,16 @@ void Level::findNext() {
   if(currentLevel==0) {
       //in level 0, read the next input from
       //file sequence.txt directly
+    if(fs>>nextBlock){
+	;
+      }
+    else {
+      //sequence.txt has been read to the end
+      //re-open the file
+      fs.close();
+      fs.open("sequence.txt");
       fs>>nextBlock;
+    }
   } // if
   else {
       //level 1 2 and 3
