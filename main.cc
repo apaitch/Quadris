@@ -7,6 +7,7 @@ using namespace std;
 
 int main( int argc , char * argv[] ) {
     bool text_only = false;
+    bool ai_on = false;
     int seed = -1;
 
     bool seed_num_next = false;
@@ -26,12 +27,15 @@ int main( int argc , char * argv[] ) {
         else if ( ( argument.compare( "-seed" ) == 0 ) && ( seed == -1 ) ) {
             seed_num_next = true;
         }
+        else if ( ( argument.compare( "-ai" ) == 0 ) && ( ! ai_on ) ) {
+            ai_on = true;
+        }
         else {
             cerr << "Invalid flag: " << argument << endl;
         }
     }
 
-    QuadrisGame quadris ( text_only , seed );
+    QuadrisGame quadris ( text_only , ai_on , seed );
     quadris.runGameLoop();
     return 0;
 }

@@ -17,6 +17,7 @@ class Block {
         char type;
         colour the_colour;
         std::pair<int , int> origin;
+        std::pair<int , int> starting_origin;
         int birth_level;
         int num_living_cells;
         std::pair<int , int> points [points_per_block];
@@ -25,6 +26,7 @@ class Block {
                                 std::pair<int , int> );
         void move( int , int );
         void rotate( bool );
+        void fillPoints();
     public:
         Block ( char, std::pair<int , int> , int , Board * );
         bool deleteCell();
@@ -37,6 +39,8 @@ class Block {
         void leftRotate();
 	int calculateDrop();
         void drop();
+
+        void reset();
 
         char getType() const;
         colour getColour() const;

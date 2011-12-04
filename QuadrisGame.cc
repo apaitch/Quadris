@@ -1,4 +1,5 @@
 #include "QuadrisGame.h"
+#include "Ai.h"
 #include "Board.h"
 #include "Level.h"
 #include "Block.h"
@@ -9,17 +10,23 @@
 
 using namespace std;
 
-QuadrisGame::QuadrisGame( bool text_only , int seed ) 
+QuadrisGame::QuadrisGame( bool text_only , bool ai_on , int seed ) 
                            : board( new Board(this) ) ,
                              command_interpreter( new CommandTrie ) ,
                              level( new Level ( board , this , seed ) ) ,
                              score_board( new ScoreBoard ( level->getLevel() ) ) ,
                              window( 0 ) ,
+                             smallWindow( 0 ) ,
+                             ai ( 0 ) ,
                              text_only( text_only ) {
     if ( ! text_only ) {
         window = new Xwindow;
 	smallWindow=new Xwindow(200,200);
 
+    }
+
+    if ( ai_on ) {
+        ai = new Ai ( this , board );
     }
 
     min_padding = 4;
@@ -55,6 +62,9 @@ void QuadrisGame::initialize() {
     command_interpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
     command_interpreter->addCommand( "restart" , &QuadrisGame::reset );
     board->setActiveBlock( level->createNew() );
+    if ( ai != 0 ) {
+        levelUp( 4 );
+    }
     output();
 } // initialize()
 
@@ -135,9 +145,26 @@ void QuadrisGame::output() {
 }
 
 void QuadrisGame::runGameLoop() {
-    while ( processInput() ) {
-        output();
-    } // while
+    if ( ai == 0 ) {
+        while ( processInput() ) {
+            output();
+        } // while
+    }
+    else {
+        while ( true ) {
+            vector< string > commands;
+            ai->makeNextMove( commands );
+            for ( unsigned int i = 0 ; i < commands.size() ; ++i ) {
+                commandFunctPtr commandFn = 
+                    command_interpreter->findCommand( commands[i] );
+                if ( commandFn != 0 ) {
+                    CALL_MEMBER_FN(*this , commandFn)( 1 );
+                    output();
+                    usleep( 200000 );
+                } // if
+            }
+        }
+    }
 }
 
 // -------------------------
@@ -203,9 +230,16 @@ void QuadrisGame::levelDown( int multiplier ) {
 void QuadrisGame::reset( int multiplier ) {
     delete board;
     delete level;
+    if ( ai != 0 ) {
+        delete ai;
+    }
 
     board = new Board(this);
     level = new Level ( board, this );
+    
+    if ( ai != 0 ) {
+        ai = new Ai( this , board );
+    }
 
     score_board->resetScore();
     score_board->setLevel( level->getLevel() );
@@ -217,5 +251,6 @@ void QuadrisGame::reset( int multiplier ) {
 // -------------------------
 // End of Command Functions
 // -------------------------
+
 
 

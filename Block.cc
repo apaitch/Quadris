@@ -18,62 +18,12 @@ pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
 // ---------------------------------------------------
 
 Block::Block( char type , pair< int, int > create_point , int level , Board * board )
-                : board( board ) , type( type ), origin( create_point ), 
+                : board( board ) , type( type ), starting_origin( create_point ), 
                   birth_level(level) , num_living_cells(4) {
 
-    pair< int , int > x_increment = make_pair( 1 , 0 );
-    pair< int , int > y_increment = make_pair( 0 , 1 );
 
-    switch ( type ) {
-        case 'Z' :
-            points[0] = origin - y_increment; 
-            points[1] = origin - y_increment + x_increment;
-            points[2] = origin + x_increment;
-            points[3] = origin + 2 * x_increment;
-            the_colour = Blue;
-            break;
-        case 'T' :
-            points[0] = origin - y_increment;
-            points[1] = origin - y_increment + x_increment;
-            points[2] = origin - y_increment + 2 * x_increment;
-            points[3] = origin + x_increment; 
-            the_colour = Orange;
-            break;
-        case 'I' :
-            points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + 2 * x_increment;
-            points[3] = origin + 3 * x_increment;
-            the_colour = Red;
-            break;
-        case 'J' :
-            points[0] = origin - y_increment;
-            points[1] = origin;
-            points[2] = origin + x_increment;
-            points[3] = origin + 2 * x_increment;
-            the_colour = Yellow;
-            break;
-        case 'L' :
-            points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + 2 * x_increment;
-            points[3] = origin + 2 * x_increment - y_increment;
-            the_colour = Green;
-            break;
-        case 'O' :
-            points[0] = origin - y_increment;
-            points[1] = origin;
-            points[2] = origin - y_increment + x_increment;
-            points[3] = origin + x_increment;
-            the_colour = Brown;
-            break;
-        case 'S' :
-            points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + x_increment - y_increment;
-            points[3] = origin + 2 * x_increment - y_increment;
-            the_colour = Cyan;
-    } // switch
+    origin = create_point;
+    fillPoints();
 } // Block
 
 // A transformation (e.g. rotate, move) generates an array of transformed points
@@ -226,4 +176,69 @@ void Block::getPoints( vector< pair<int,int> > & points_vector ) const {
 bool Block::deleteCell() {
     num_living_cells -= 1;
     return (num_living_cells == 0) ? true : false;
+}
+
+void Block::fillPoints() {
+    pair< int , int > x_increment = make_pair( 1 , 0 );
+    pair< int , int > y_increment = make_pair( 0 , 1 );
+
+    switch ( type ) {
+        case 'Z' :
+            points[0] = origin - y_increment; 
+            points[1] = origin - y_increment + x_increment;
+            points[2] = origin + x_increment;
+            points[3] = origin + 2 * x_increment;
+            the_colour = Blue;
+            break;
+        case 'T' :
+            points[0] = origin - y_increment;
+            points[1] = origin - y_increment + x_increment;
+            points[2] = origin - y_increment + 2 * x_increment;
+            points[3] = origin + x_increment; 
+            the_colour = Orange;
+            break;
+        case 'I' :
+            points[0] = origin;
+            points[1] = origin + x_increment;
+            points[2] = origin + 2 * x_increment;
+            points[3] = origin + 3 * x_increment;
+            the_colour = Red;
+            break;
+        case 'J' :
+            points[0] = origin - y_increment;
+            points[1] = origin;
+            points[2] = origin + x_increment;
+            points[3] = origin + 2 * x_increment;
+            the_colour = Yellow;
+            break;
+        case 'L' :
+            points[0] = origin;
+            points[1] = origin + x_increment;
+            points[2] = origin + 2 * x_increment;
+            points[3] = origin + 2 * x_increment - y_increment;
+            the_colour = Green;
+            break;
+        case 'O' :
+            points[0] = origin - y_increment;
+            points[1] = origin;
+            points[2] = origin - y_increment + x_increment;
+            points[3] = origin + x_increment;
+            the_colour = Brown;
+            break;
+        case 'S' :
+            points[0] = origin;
+            points[1] = origin + x_increment;
+            points[2] = origin + x_increment - y_increment;
+            points[3] = origin + 2 * x_increment - y_increment;
+            the_colour = Cyan;
+    } // switch
+}
+
+// Resets the block to it's default position, using specified point as the
+// origin.
+void Block::reset() {
+    board->deleteBlock( this );
+    origin = starting_origin;
+    fillPoints();
+    board->setActiveBlock(this);
 }

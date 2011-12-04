@@ -2,7 +2,9 @@
 #define __QUADRIS_GAME_H__
 
 #include <utility>
+#include <map>
 
+class Ai;
 class Block;
 class Board;
 class Level;
@@ -21,6 +23,8 @@ class QuadrisGame {
         ScoreBoard * score_board;
         Xwindow * window;  //display the main board
 	Xwindow * smallWindow;  //display the next block
+        Ai * ai;
+
         bool text_only;
 
         // Variables for drawing
@@ -56,11 +60,12 @@ class QuadrisGame {
         void output();
 
     public:
-        explicit QuadrisGame( bool = false , int = -1 );
+        explicit QuadrisGame( bool = false , bool = false , int = -1 );
         ~QuadrisGame();
         void runGameLoop();
 	void lineCleared( int );
         void blockCleared( int );
+
 };
 
 #endif
