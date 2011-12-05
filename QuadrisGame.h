@@ -51,7 +51,7 @@ class QuadrisGame {
         void draw();
 
     public:
-        explicit QuadrisGame( bool = false , bool = false , int = -1 );
+        explicit QuadrisGame( bool = false , int = -1 , int = -1 );
         ~QuadrisGame();
         void runGameLoop();
 	void lineCleared( int );

@@ -8,16 +8,22 @@ using namespace std;
 
 int main( int argc , char * argv[] ) {
     bool textOnly = false;
-    bool aiOn = false;
+    int aiLevel = -1;
     int seed = -1;
 
     bool seedNumNext = false;
+    bool aiLevelNext = false;
     for ( int i = 1 ; i < argc ; ++i ) {
         if ( seedNumNext ) {
             seed = atoi( argv[i] );
             seedNumNext = false;
             continue;
         } // if
+        else if ( aiLevelNext ) {
+            aiLevel = atoi( argv[i] );
+            aiLevelNext = false;        
+            continue;
+        }
 
         string argument = argv[i];
         // Only taking into account the first appearance of any flag. Subsequent
@@ -28,15 +34,20 @@ int main( int argc , char * argv[] ) {
         else if ( ( argument.compare( "-seed" ) == 0 ) && ( seed == -1 ) ) {
             seedNumNext = true;
         } // else if
-        else if ( ( argument.compare( "-ai" ) == 0 ) && ( ! aiOn ) ) {
-            aiOn = true;
+        else if ( ( argument.compare( "-ai" ) == 0 ) && ( aiLevel == -1 ) ) {
+            aiLevelNext = true;
         } // else if
         else {
             cerr << "Invalid flag: " << argument << endl;
         } // else if
     } // for
 
-    QuadrisGame quadris ( textOnly , aiOn , seed );
+    if ( seedNumNext || aiLevelNext ) {
+        cerr << "ERROR: no numeric argument for -seed or -ai flags" << endl;
+        exit(1);
+    }
+
+    QuadrisGame quadris ( textOnly , aiLevel , seed );
     quadris.runGameLoop();
     return 0;
 } // main()

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed ) 
+QuadrisGame::QuadrisGame( bool textOnly , int aiLevel , int seed ) 
                            : board( new Board(this) ) ,
                              commandInterpreter( new CommandTrie ) ,
                              level( new Level ( board , this , seed ) ) ,
@@ -19,7 +19,7 @@ QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed )
                              mainWindow( 0 ) ,
                              nextWindow( 0 ) ,
                              ai ( 0 ) ,
-                             aiOn ( aiOn ) ,
+                             aiOn ( false ) ,
                              gameOver ( false ) ,
                              textOnly( textOnly ) {
     if ( ! textOnly ) {
@@ -27,11 +27,6 @@ QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed )
         nextWindow = new Xwindow( nextWindowWidth , nextWindowHeight );
     } // if
 
-    // Don't bother creating Ai object if the -ai flag is not set - it won't be
-    // used.
-    if ( aiOn ) {
-        ai = new Ai ( this , board );
-    } // if
 
     commandInterpreter->addCommand( "left" , &QuadrisGame::moveLeft );
     commandInterpreter->addCommand( "right" , &QuadrisGame::moveRight );
@@ -43,6 +38,20 @@ QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed )
     commandInterpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
     commandInterpreter->addCommand( "restart" , &QuadrisGame::reset );
     commandInterpreter->addCommand( "rename" , &QuadrisGame::rename );
+
+    // Don't bother creating Ai object if the -ai flag is not set - it won't be
+    // used.
+    if ( aiLevel != -1 ) {
+        aiOn = true;
+        int levelDiff = aiLevel - level->getLevel();
+        if ( levelDiff > 0 ) {
+            levelUp( levelDiff );
+        }
+        else if ( levelDiff < 0 ) {
+            levelDown( 0 - levelDiff );
+        }
+        ai = new Ai ( this , board );
+    } // if
 
     board->setActiveBlock( level->getNextBlock() );
 
