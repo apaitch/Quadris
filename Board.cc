@@ -41,6 +41,12 @@ Block * Board::getActiveBlock() {
     return activeBlock;
 } // getActiveBlock()
 
+/*
+ * Sets the given block to be the active block. The active block is the one the
+ * user/AI controls.
+ *
+ * Returns true if setting the block as the active block results in a collusion.
+ */
 bool Board::setActiveBlock( Block * block ) {
     vector< pair<int , int> > blockPoints;
     block->getPoints( blockPoints );
@@ -56,11 +62,18 @@ bool Board::setActiveBlock( Block * block ) {
         activeBlock = block;
         addBlock ( activeBlock );
     } // if
+    else {
+        // If the game is over, need to delete the given block explicitly since
+        // it's not on the board.
+        delete block;
+    }
     return gameOver;
 } // setActiveBlock()
 
-// Checks if the specified cell is occupied by a block different from the
-// specified block.
+/* 
+ * Returns true if the specified cell is occupied by a block different from the
+ * specified block.
+ */
 bool Board::cellOccupied( Block * block , pair<int,int> point ) {
     bool occupied = true;
 
@@ -75,6 +88,11 @@ bool Board::cellOccupied( Block * block , pair<int,int> point ) {
     return occupied;
 } // cellOccupied()
 
+/*
+ * Adds a pointer to the specified block at the cells that match the coordinates
+ * of the points in the block. This is to add a block to the board for
+ * drawing/calculations.
+ */
 void Board::addBlock( Block * block ) {
     vector< pair<int , int> > blockPoints;
     block->getPoints( blockPoints );
@@ -87,6 +105,11 @@ void Board::addBlock( Block * block ) {
     } // for
 } // addBlock()
 
+/*
+ * Sets the cells that match the coordinates of the points in the block to 0.
+ * This is to remove a block from the board for drawing/calculation purposes.
+ * NOTE: this does NOT delete the block from memory.
+ */
 void Board::deleteBlock( Block * block ) {
     vector< pair<int , int> > blockPoints;
     block->getPoints( blockPoints );
@@ -97,7 +120,7 @@ void Board::deleteBlock( Block * block ) {
         theBoard[ x ][ y ] = 0;
         filledCellsInRow[ y ] -= 1;
     } // for
-}
+} // deleteBlock()
 
 void Board::draw( Xwindow * window ) {
     //find out how much the block could drop
@@ -137,15 +160,16 @@ void Board::draw( Xwindow * window ) {
  * Outputs the state of the board to stdout.
  */
 void Board::print() {
-    //find out how much the block could drop
+    // Find out how much the block could drop
     int maxDrop = activeBlock->getDropAmount();
 
-    //find out the current position of the current block
+    // Find out the position of the current block
+    // if it was to be dropped.
     vector< pair< int , int > > shadowPos;
     activeBlock->getPoints( shadowPos );
     for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
         shadowPos[ i ].second += maxDrop;
-    }
+    } // for
 
     for ( int y = 0 ; y < numRows ; ++y ) {
         for ( int x = 0 ; x < numColumns ; ++x ) {
@@ -181,9 +205,15 @@ void Board::clearFilledRows() {
     } // if
 } // clearFilledRows()
 
+/*
+ * Removes the specified row from the board and shifts all the rows above
+ * downwards.
+ */
 void Board::removeRow( int rowToRm ) {
     if ( rowToRm < numRows ) {
 
+        // If a block is completely removed, need to delete the block from
+        // memory and report the score.
         for ( int x = 0 ; x < numColumns ; ++x ) {
             bool blockGone = theBoard[ x ][ rowToRm ]->deleteCell();
             if ( blockGone ) {
@@ -205,6 +235,6 @@ void Board::removeRow( int rowToRm ) {
             theBoard[ x ][ 0 ] = 0;
         } // for
         filledCellsInRow[ 0 ] = 0;
-    }
+    } // if
 } // removeRow()
 

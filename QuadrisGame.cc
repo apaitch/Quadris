@@ -52,9 +52,11 @@ QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed )
 
 QuadrisGame::~QuadrisGame() {
     delete mainWindow;
+    delete nextWindow;
     delete board;
     delete commandInterpreter;
     delete level;
+    delete ai;
     delete scoreBoard;
 } 
 
