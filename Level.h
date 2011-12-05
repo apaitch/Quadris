@@ -10,28 +10,33 @@ class Board;
 class QuadrisGame;
 class Xwindow;
 
+/*
+ * Encapsulates level calculations, including determining the type of the next
+ * block and creating said block to pass to the Board.
+ */
 class Level {
     private:
-        int currentLevel; //stores the level currently in
-        blockType nextBlockType; //record the type of the next block
-        std::ifstream blockSequenceFile; //store the content in "sequence.txt"
-        PRNG randomNumGenerator;
         Board * board;
         QuadrisGame * game;
 
-        blockType numToType( int );
+        int currentLevel;
+        blockType nextBlockType;
+        std::ifstream blockSequenceFile; // Will read from "sequence.txt"
+        PRNG randomNumGenerator;
+
+        blockType numToBlockType( int ); // Like an immutable map
         void restart();
-        int generateNumber();
+        int generateBlockNumber();
         void findNextBlockType();
 
     public:
         Level( Board * , QuadrisGame * , int seed = -1 );
         Block * getNextBlock();
         int getLevel();
-        void levelUp();     // increase the level by 1
-        void levelDown();    //decrease the level by 1
-        void printNext();  //print the type of next block
-        void drawNext(Xwindow *); //draw the next block in window
+        void levelUp();
+        void levelDown();
+        void printNext();
+        void drawNext(Xwindow *);
 };
 
 #endif

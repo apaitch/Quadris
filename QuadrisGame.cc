@@ -19,17 +19,35 @@ QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed )
                              mainWindow( 0 ) ,
                              nextWindow( 0 ) ,
                              ai ( 0 ) ,
+                             aiOn ( aiOn ) ,
+                             gameOver ( false ) ,
                              textOnly( textOnly ) {
     if ( ! textOnly ) {
         mainWindow = new Xwindow( mainWindowWidth , mainWindowHeight );
         nextWindow = new Xwindow( nextWindowWidth , nextWindowHeight );
     } // if
 
+    // Don't bother creating Ai object if the -ai flag is not set - it won't be
+    // used.
     if ( aiOn ) {
         ai = new Ai ( this , board );
     } // if
 
-    initialize(); 
+    commandInterpreter->addCommand( "left" , &QuadrisGame::moveLeft );
+    commandInterpreter->addCommand( "right" , &QuadrisGame::moveRight );
+    commandInterpreter->addCommand( "clockwise" , &QuadrisGame::rightRotate );
+    commandInterpreter->addCommand( "counterclockwise" , &QuadrisGame::leftRotate );
+    commandInterpreter->addCommand( "down" , &QuadrisGame::moveDown );
+    commandInterpreter->addCommand( "drop" , &QuadrisGame::drop );
+    commandInterpreter->addCommand( "levelup" , &QuadrisGame::levelUp );
+    commandInterpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
+    commandInterpreter->addCommand( "restart" , &QuadrisGame::reset );
+    commandInterpreter->addCommand( "rename" , &QuadrisGame::rename );
+
+    board->setActiveBlock( level->getNextBlock() );
+
+    output();
+
 } // QuadrisGame 
 
 QuadrisGame::~QuadrisGame() {
@@ -40,34 +58,9 @@ QuadrisGame::~QuadrisGame() {
     delete scoreBoard;
 } 
 
-void QuadrisGame::initialize() {
-    commandInterpreter->addCommand( "left" , &QuadrisGame::moveLeft );
-    commandInterpreter->addCommand( "right" , &QuadrisGame::moveRight );
-    commandInterpreter->addCommand( "clockwise" , &QuadrisGame::rightRotate );
-    commandInterpreter->addCommand( "counterclockwise" , &QuadrisGame::leftRotate );
-    commandInterpreter->addCommand( "down" , &QuadrisGame::moveDown );
-    commandInterpreter->addCommand( "drop" , &QuadrisGame::drop );
-    commandInterpreter->addCommand( "levelup" , &QuadrisGame::levelUp );
-    commandInterpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
-    commandInterpreter->addCommand( "restart" , &QuadrisGame::reset );
-    board->setActiveBlock( level->getNextBlock() );
-
-    if ( ai != 0 ) {
-        levelUp( 4 );
-    } // if
-
-    output();
-} // initialize()
-
-void QuadrisGame::lineCleared( int numCleared ) {
-    scoreBoard->linesCleared( numCleared );
-} // lineCleared()
-
-void QuadrisGame::blockCleared( int level ) {
-    scoreBoard->blockCleared( level );
-} // blockCleared()
-
-// Take in and process one command.
+/*
+ * Uses the command interpreter to process a single command from the user.
+ */
 bool QuadrisGame::processInput() {
     string fullCommand;
 
@@ -75,7 +68,7 @@ bool QuadrisGame::processInput() {
         string command;
         int multiplier = 1;
 
-        // If there is a numeric input, get multiplier
+        // If there is a numeric prefix, use it as a multipler
         if ( fullCommand[0] >= '0' && fullCommand[0] <= '9' ) {
             multiplier = 0;
             for ( unsigned int i = 0 ; i < fullCommand.size() ; ++i ) {
@@ -104,6 +97,9 @@ bool QuadrisGame::processInput() {
     } // else
 } // processInput()
 
+/*
+ * Prints the game state to stdout.
+ */
 void QuadrisGame::print() {
     scoreBoard->print();
     cout << "----------" << endl;
@@ -113,6 +109,10 @@ void QuadrisGame::print() {
     level->printNext();
 } // print()
 
+/*
+ * Draws the current state of the game. NOTE: Does not draw only the parts that
+ * changed. Instead, fills the windows with black and draws everything.
+ */
 void QuadrisGame::draw() {
     mainWindow->fillRectangle( 0 , 0 , mainWindowWidth , mainWindowHeight);
     nextWindow->fillRectangle( 0 , 0 , nextWindowWidth , nextWindowHeight);
@@ -125,6 +125,9 @@ void QuadrisGame::draw() {
     
 } // draw()
 
+/*
+ * The main output function.
+ */
 void QuadrisGame::output() {
     print();
     if ( ! textOnly ) {
@@ -132,14 +135,31 @@ void QuadrisGame::output() {
     } // if
 } // output()
 
+void QuadrisGame::lineCleared( int numCleared ) {
+    scoreBoard->linesCleared( numCleared );
+} // lineCleared()
+
+void QuadrisGame::blockCleared( int level ) {
+    scoreBoard->blockCleared( level );
+} // blockCleared()
+
+/*
+ * The engine of the game. Called after QuadrisGame is created and initialized
+ * in order to actually start playing.
+ */
 void QuadrisGame::runGameLoop() {
+    // User input version
     if ( ai == 0 ) {
         while ( processInput() ) {
+            if ( gameOver ) {
+                reset( 1 );
+            }
             output();
         } // while
     } // if
+    // AI version
     else {
-        while ( true ) {
+        while ( ! gameOver ) {
             vector< string > commands;
             ai->getNextMove( commands );
             for ( unsigned int i = 0 ; i < commands.size() ; ++i ) {
@@ -148,7 +168,7 @@ void QuadrisGame::runGameLoop() {
                 if ( commandFn != 0 ) {
                     CALL_MEMBER_FN(*this , commandFn)( 1 );
                     output();
-                    usleep( 200000 );
+                    usleep( 50000 );
                 } // if
             } // for
         } // while
@@ -188,14 +208,16 @@ void QuadrisGame::moveDown( int multiplier ) {
     } // for
 } // moveDown()
 
+/*
+ * Drops a specified number of next blocks, stopping and resetting if the 
+ * dropping results in a game over.
+ */
 void QuadrisGame::drop( int multiplier ) {
-    bool gameOver = false;
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->drop();
-        board->examine();
+        board->clearFilledRows();
         gameOver = board->setActiveBlock( level->getNextBlock() );
         if ( gameOver ) {
-            reset( 1 );
             break;
         } // if
     } // for
@@ -215,7 +237,11 @@ void QuadrisGame::levelDown( int multiplier ) {
     scoreBoard->setLevel( level->getLevel() );
 } // levelDown()
 
+/*
+ * Resets the game once, ignoring its multiplier.
+ */
 void QuadrisGame::reset( int multiplier ) {
+    gameOver = false;
     delete board;
     delete level;
 
@@ -233,9 +259,29 @@ void QuadrisGame::reset( int multiplier ) {
     scoreBoard->resetScore();
     scoreBoard->setLevel( level->getLevel() );
     board->setActiveBlock( level->getNextBlock() );
-    output();
-
 } // reset()
+
+/*
+ * Renames a command according to user input. 
+ */
+void QuadrisGame::rename( int multiplier ) {
+    string oldName;
+    string newName;
+    if ( cin >> oldName && cin >> newName ) {
+        // Ignore new names that start with a numeric prefix ( because of the
+        // way processInput() handles numeric prefixes )
+        if ( ( newName[0] < '0' ) || ( newName[0] > '9' ) ) {
+            commandInterpreter->changeCommand( oldName , newName );
+        } // if
+        else {
+            cerr << "Ignoring new name - " << newName; 
+            cerr << " due to numeric prefix." << endl;
+        } // else
+    } // if
+    else {
+        cerr << "rename command expects two arguments" << endl;
+    } // else
+} // rename()
 
 // -------------------------
 // End of Command Functions

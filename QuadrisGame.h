@@ -12,17 +12,25 @@ class Xwindow;
 class CommandTrie;
 class ScoreBoard;
 
+/*
+ * This is the enveloping class for the game. It controls and coordinates user
+ * input, drawing/pring, and other functions. It acts as a middle-man between
+ * some of the other objects (e.g. Board and ScoreBoard). However, it doesn't
+ * control any of the gameplay other than user input.
+ */
 class QuadrisGame {
     private:
         Board * board;
         CommandTrie * commandInterpreter;
         Level * level;
         ScoreBoard * scoreBoard;
-        Xwindow * mainWindow;  //display the main board
+        Xwindow * mainWindow;  //display board and score
 	Xwindow * nextWindow;  //display the next block
         Ai * ai;
 
         bool textOnly;
+        bool aiOn;
+        bool gameOver;
 
         // Command Functions
         void rightRotate( int );
@@ -34,14 +42,13 @@ class QuadrisGame {
         void levelUp( int );
         void levelDown( int );
         void reset( int );
+        void rename( int );
         // -------------------------
 
-        void initialize();
         bool processInput();
-
+        void output();
         void print();
         void draw();
-        void output();
 
     public:
         explicit QuadrisGame( bool = false , bool = false , int = -1 );

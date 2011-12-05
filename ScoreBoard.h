@@ -3,6 +3,9 @@
 
 class Xwindow;
 
+/*
+ * Encapsulates scorekeeping and drawing the score for the game.
+ */
 class ScoreBoard {
     private:
         int highScore;

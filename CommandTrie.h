@@ -10,7 +10,7 @@
 
 class QuadrisGame;
 
-// A pointer to a command function. See how it's used in main.cc
+// A function pointer to a QuadrisGame member function
 typedef void (QuadrisGame::*commandFunctPtr) ( int );
 
 struct CommandTrieNode {

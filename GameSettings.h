@@ -33,11 +33,11 @@ const int mainWindowHeight = 700;
 
 const int scoreBoardHeight = 20;
 const int scoreBoardWidth = mainWindowWidth;
-const std::pair<int,int> scoreBoardPosn = std::make_pair( 0 , 0 );
+const std::pair<int,int> scoreBoardPosn = std::make_pair( 2 , 0 );
 
 const int boardHeight = mainWindowHeight - scoreBoardHeight;
-const int boardWidth = mainWindowWidth;
-const std::pair<int,int> boardPosn = std::make_pair( 0 , scoreBoardHeight );
+const int boardWidth = mainWindowWidth - 4;
+const std::pair<int,int> boardPosn = std::make_pair( 2 , scoreBoardHeight );
 
 const int blockHeight = boardHeight / numRows;
 const int blockWidth = boardWidth / numColumns;

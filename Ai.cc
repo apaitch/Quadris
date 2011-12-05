@@ -11,11 +11,11 @@ Ai::Ai( QuadrisGame * game , Board * board ) : game( game ) ,
                                                board( board ) ,
                                                activeBlock( 0 ) {
     // Punish height at which block lands
-    weights.push_back(-3.5);
+    weights.push_back(-4.5);
     // Punish holes
-    weights.push_back(-7.5);
+    weights.push_back(-4.5);
     // Reward filled rows
-    weights.push_back(4.4);
+    weights.push_back(5.4);
     // Punish row transitions
     weights.push_back(-4.2);
     // Punish column transitions
@@ -23,7 +23,7 @@ Ai::Ai( QuadrisGame * game , Board * board ) : game( game ) ,
     // Punish wells
     weights.push_back(-3.5);
     // Punish blockades
-    weights.push_back(-4.5);
+    weights.push_back(-7.5);
 } // Ai()
 
 /*
@@ -49,7 +49,7 @@ float Ai::evaluateBoard() const {
     height = 0;
     for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
         if ( ( numRows - blockPoints[i].second ) > height ) {
-            height = numRows - blockPoints[i].second;
+            height = numRows - blockPoints[i].second ;
         } // if
     } // for 
 

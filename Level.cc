@@ -23,7 +23,7 @@ Level::Level( Board * board , QuadrisGame * game , int seed )
     findNextBlockType();
 } // Level
 
-blockType Level::numToType( int i ) {
+blockType Level::numToBlockType( int i ) {
     blockType returnType;
     switch ( i ) {
         case 0 : returnType = I;
@@ -42,9 +42,13 @@ blockType Level::numToType( int i ) {
     } // switch
 
     return returnType;
-} // numToType()
+} // numToBlockType()
 
-int Level::generateNumber() {
+/*
+ * Uses randomNumGenerator to generate a number between 0 and 6 to indicate the
+ * type of the next block. The probabilities vary by level.
+ */
+int Level::generateBlockNumber() {
     int num;
     if ( currentLevel == 1 ) {
         num = randomNumGenerator( 11 );
@@ -100,21 +104,22 @@ int Level::generateNumber() {
         } // switch
     } // else if
     return num;
-} // generateNumber()
+} // generateBlockNumber()
 
+/*
+ * Stores the type of the next block in the nextBlockType field.
+ */
 void Level::findNextBlockType() {
     if ( currentLevel == 0 ) {
-        //in level 0, read the next input from
-        //file sequence.txt directly
         char nextBlock;
         if ( ! ( blockSequenceFile >> nextBlock ) ) {
-            //sequence.txt has been read to the end
-            //re-open the file
+            // Sequence.txt read to end. Re-open.
             blockSequenceFile.close();
             blockSequenceFile.open( "sequence.txt" );
             blockSequenceFile >> nextBlock;
-        }
+        } // if
 
+        // Need to make sure the next block corresponds to a type.
         switch ( nextBlock ) {
             case 'I' : case 'J' : case 'L' : case 'O' : case 'S' : case 'Z' :
             case 'T' :
@@ -124,16 +129,17 @@ void Level::findNextBlockType() {
                 cerr << "Your sequence.txt file has an invalid block type. ";
                 cerr << "Get rid of it ;) For now, here's an I." << endl; 
                 nextBlockType = I;
-        }
+        } // switch
     } // if
     else {
-        //level 1 2 and 3
-        //will use random number generator
-        //and then transfer it to char
-        nextBlockType = this->numToType( this->generateNumber() );
+        nextBlockType = this->numToBlockType( this->generateBlockNumber() );
     } // else
 } // findNextBlockType()
 
+/*
+ * Called to get the next block according to the level specifications. Serves a
+ * pointer to the created block.
+ */
 Block * Level::getNextBlock() {
     Block * newBlock;
 

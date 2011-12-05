@@ -16,13 +16,14 @@ class Block {
         blockType type;
         colour blockColour;
 
+        // For reset().
+        std::pair<int , int> startingOrigin;
+
         std::pair<int , int> origin;
         int birthLevel;
         int numLivingCells;
         std::pair<int , int> points [ pointsPerBlock ];
 
-        // For reset().
-        std::pair<int , int> startingOrigin;
 
         
         void tryTransformation( std::pair<int , int> [] , 

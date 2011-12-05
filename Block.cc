@@ -19,17 +19,17 @@ pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
 
 Block::Block( blockType type , pair< int, int > createPoint , 
               int level , Board * board )
-                : board( board ) , type( type ), startingOrigin( createPoint ), 
+                : board( board ) , type( type ), startingOrigin( createPoint ) ,
                   birthLevel( level ) , numLivingCells( pointsPerBlock ) {
-
-
     origin = createPoint;
     initializePoints();
 } // Block
 
-// A transformation (e.g. rotate, move) generates an array of transformed points
-// and passes it to tryTransformation(). If the transformation doesn't result in
-// collisions in the board then tryTransformation() applies the transformation.
+/*
+ * A transformation (e.g. rotate, move) generates an array of transformed points
+ * and passes it to tryTransformation(). If the transformation doesn't result in
+ * collisions in the board then tryTransformation() applies the transformation.
+ */
 void Block::tryTransformation( pair< int , int > transformedPoints [] ,
                                pair< int , int > transformedOrigin ) {
     bool transformationSuccess = true;
@@ -163,7 +163,7 @@ int Block::getDropAmount()
 } // getDropAmount()
 
 void Block::drop() {
-    int furthestPossibleDrop = calculateDrop();
+    int furthestPossibleDrop = getDropAmount();
     move ( 0 , furthestPossibleDrop );
 } // drop()
 
@@ -197,7 +197,7 @@ bool Block::deleteCell() {
 } // deleteCell()
 
 /*
- * Calculates the default position and colour of each of the block's points
+ * Sets the default position (and colour) of each of the block's points
  * depending on the block type and position of the origin.
  */
 void Block::initializePoints() {
