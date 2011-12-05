@@ -22,7 +22,7 @@ Board::Board( QuadrisGame *game ):game( game ) {
 } // Board()
 
 Board::~Board() {
-    //examine each cell, if not Null, delete the cell
+    //examines each cell, if not Null, delete the cell
     //if a block is totally deleted, 
     //release the memory for the block
     for ( int x = 0 ; x < numColumns ; ++x ) {
@@ -101,7 +101,7 @@ void Board::deleteBlock( Block * block ) {
 
 void Board::draw( Xwindow * window ) {
     //find out how much the block could drop
-    int maxDrop = activeBlock->calculateDrop();
+    int maxDrop = activeBlock->getDropAmount();
 
     //find out the current position of the current block
     vector< pair< int , int > > shadowPos;
@@ -133,9 +133,12 @@ void Board::draw( Xwindow * window ) {
     } // for
 } // draw()
 
+/*
+ * Outputs the state of the board to stdout.
+ */
 void Board::print() {
     //find out how much the block could drop
-    int maxDrop = activeBlock->calculateDrop();
+    int maxDrop = activeBlock->getDropAmount();
 
     //find out the current position of the current block
     vector< pair< int , int > > shadowPos;
@@ -165,49 +168,43 @@ void Board::print() {
     } // for
 } // print()
 
-void Board::examine() {
-    int numRemovedRow = 0; //record how many rows have be removed
+void Board::clearFilledRows() {
+    int rowsRemoved = 0;
     for ( int y = 0 ; y < numRows ; ++y ) {
         if ( filledCellsInRow[ y ] == numColumns ) {
-            numRemovedRow += 1;
+            rowsRemoved += 1;
             this->removeRow( y );
         } // if
     } // for
-    if ( numRemovedRow > 0 ) {
-        game->lineCleared( numRemovedRow );
+    if ( rowsRemoved > 0 ) {
+        game->lineCleared( rowsRemoved );
     } // if
-} // examine()
+} // clearFilledRows()
 
 void Board::removeRow( int rowToRm ) {
-    assert( rowToRm < numRows );
-    int cellLevel;  //record the level of the removed block
+    if ( rowToRm < numRows ) {
 
-    //call the blocks of row i to delete a cell
-    for ( int x = 0 ; x < numColumns ; ++x ) {
-        bool removed = theBoard[ x ][ rowToRm ]->deleteCell();
-        if ( removed ) {
-            cellLevel = theBoard[ x ][ rowToRm ]->getLevel();
-            game->blockCleared( cellLevel );
-            delete theBoard[ x ][ rowToRm ];
-        } // if
-    } // for
-
-    //shift the rows above row i downwards
-    for ( int y = rowToRm ; y > 0 ; --y ) {
         for ( int x = 0 ; x < numColumns ; ++x ) {
-            theBoard[ x ][ y ] = theBoard[ x ][ y - 1 ];
+            bool blockGone = theBoard[ x ][ rowToRm ]->deleteCell();
+            if ( blockGone ) {
+                game->blockCleared( theBoard[ x ][ rowToRm ]->getLevel() );
+                delete theBoard[ x ][ rowToRm ];
+            } // if
         } // for
-        //the record for the # of cells filled for each row
-        //should also be shifted
-        filledCellsInRow[ y ] = filledCellsInRow[ y - 1 ];
-    } // for
 
-    //the first row is filled by 0 cells
-    filledCellsInRow[ 0 ] = 0;
+        // Shift the rows above downwards
+        for ( int y = rowToRm ; y > 0 ; --y ) {
+            for ( int x = 0 ; x < numColumns ; ++x ) {
+                theBoard[ x ][ y ] = theBoard[ x ][ y - 1 ];
+            } // for
+            filledCellsInRow[ y ] = filledCellsInRow[ y - 1 ];
+        } // for
 
-    //for the up most row, NULL will be refilled
-    for ( int x = 0 ; x < numColumns ; ++x ) {
-        theBoard[ x ][ 0 ] = 0;
-    } // for
+        // Make sure the first row is filled with 0's
+        for ( int x = 0 ; x < numColumns ; ++x ) {
+            theBoard[ x ][ 0 ] = 0;
+        } // for
+        filledCellsInRow[ 0 ] = 0;
+    }
 } // removeRow()
 

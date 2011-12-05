@@ -2,6 +2,7 @@
 #define __GAMESETTINGS_H__
 
 #include <utility>
+#include <map>
 
 // This header file contains definitions for gameplay and drawing settings 
 
@@ -15,6 +16,15 @@ const int maxLevel = 3;
 const int minLevel = 0;
 
 const std::pair<int,int> startingOrigin = std::make_pair( 0 , 3 );
+
+enum blockType { T = 'T',
+                 S = 'S',
+                 I = 'I',
+                 J = 'J',
+                 L = 'L',
+                 O = 'O',
+                 Z = 'Z' };
+
 // -------------------------------
 // Drawing settings---------------
 const int mainWindowWidth = 400;

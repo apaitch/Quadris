@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include "PRNG.h"
+#include "GameSettings.h"
 
 class Block;
 class Board;
@@ -12,13 +13,13 @@ class Xwindow;
 class Level {
     private:
         int currentLevel; //stores the level currently in
-        char nextBlockType; //record the type of the next block
+        blockType nextBlockType; //record the type of the next block
         std::ifstream blockSequenceFile; //store the content in "sequence.txt"
         PRNG randomNumGenerator;
         Board * board;
         QuadrisGame * game;
 
-        char numCharTransfer( int );
+        blockType numToType( int );
         void restart();
         int generateNumber();
         void findNextBlockType();

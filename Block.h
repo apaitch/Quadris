@@ -13,21 +13,25 @@ class Board;
 class Block {
     private:
         Board * board;
-        char type;
-        colour theColour;
+        blockType type;
+        colour blockColour;
+
         std::pair<int , int> origin;
-        std::pair<int , int> startingOrigin;
         int birthLevel;
         int numLivingCells;
-        std::pair<int , int> points [pointsPerBlock];
+        std::pair<int , int> points [ pointsPerBlock ];
+
+        // For reset().
+        std::pair<int , int> startingOrigin;
+
         
         void tryTransformation( std::pair<int , int> [] , 
                                 std::pair<int , int> );
         void move( int , int );
         void rotate( bool );
-        void fillPoints();
+        void initializePoints();
     public:
-        Block ( char, std::pair<int , int> , int , Board * );
+        Block ( blockType , std::pair<int , int> , int , Board * );
         bool deleteCell();
 
         // Movement interface
@@ -36,9 +40,11 @@ class Block {
         void moveDown();
         void rightRotate();
         void leftRotate();
-	int calculateDrop();
+
+	int getDropAmount();
         void drop();
 
+        // For use by AI.
         void reset();
 
         char getType() const;

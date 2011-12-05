@@ -61,11 +61,11 @@ void QuadrisGame::initialize() {
 
 void QuadrisGame::lineCleared( int numCleared ) {
     scoreBoard->linesCleared( numCleared );
-}
+} // lineCleared()
 
 void QuadrisGame::blockCleared( int level ) {
     scoreBoard->blockCleared( level );
-}
+} // blockCleared()
 
 // Take in and process one command.
 bool QuadrisGame::processInput() {
@@ -111,7 +111,7 @@ void QuadrisGame::print() {
     cout << "----------" << endl;
     cout << "Next:" << endl;
     level->printNext();
-}
+} // print()
 
 void QuadrisGame::draw() {
     mainWindow->fillRectangle( 0 , 0 , mainWindowWidth , mainWindowHeight);
@@ -130,7 +130,7 @@ void QuadrisGame::output() {
     if ( ! textOnly ) {
         draw();
     } // if
-}
+} // output()
 
 void QuadrisGame::runGameLoop() {
     if ( ai == 0 ) {
@@ -141,7 +141,7 @@ void QuadrisGame::runGameLoop() {
     else {
         while ( true ) {
             vector< string > commands;
-            ai->makeNextMove( commands );
+            ai->getNextMove( commands );
             for ( unsigned int i = 0 ; i < commands.size() ; ++i ) {
                 commandFunctPtr commandFn = 
                     commandInterpreter->findCommand( commands[i] );
@@ -153,7 +153,7 @@ void QuadrisGame::runGameLoop() {
             } // for
         } // while
     } // else
-}
+} // runGameLoop()
 
 // -------------------------
 // Defining Command Functions
@@ -162,7 +162,7 @@ void QuadrisGame::rightRotate( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->rightRotate();
     } // for
-}
+} // rightRotate()
 
 void QuadrisGame::leftRotate( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
@@ -174,19 +174,19 @@ void QuadrisGame::moveLeft( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveLeft();
     } // for
-}
+} // moveLeft()
 
 void QuadrisGame::moveRight( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveRight();
     } // for
-}
+} // moveRight()
 
 void QuadrisGame::moveDown( int multiplier ) {
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->moveDown();
     } // for
-}
+} // moveDown()
 
 void QuadrisGame::drop( int multiplier ) {
     bool gameOver = false;
@@ -199,21 +199,21 @@ void QuadrisGame::drop( int multiplier ) {
             break;
         } // if
     } // for
-}
+} // drop()
 
 void QuadrisGame::levelUp( int multiplier ) {
     for( int times = 0; times < multiplier ; ++times ) {
         level->levelUp();
     } // for
     scoreBoard->setLevel( level->getLevel() );
-}
+} // levelUp()
 
 void QuadrisGame::levelDown( int multiplier ) {
     for( int times = 0 ; times < multiplier ; ++times ) {
         level->levelDown();
     } // for
     scoreBoard->setLevel( level->getLevel() );
-}
+} // levelDown()
 
 void QuadrisGame::reset( int multiplier ) {
     delete board;
@@ -235,7 +235,7 @@ void QuadrisGame::reset( int multiplier ) {
     board->setActiveBlock( level->getNextBlock() );
     output();
 
-} // reset
+} // reset()
 
 // -------------------------
 // End of Command Functions

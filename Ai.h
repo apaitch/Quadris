@@ -2,6 +2,7 @@
 #define _AIH__
 
 #include <vector>
+#include <map>
 #include <string>
 
 class QuadrisGame;
@@ -20,20 +21,18 @@ class Ai {
         Board * board;
         Block * activeBlock;
 
+        // Determine how important each feature is
         std::vector<float> weights;
          
-        // Evaluates the state of the board and returns a score as a function of
-        // the weight.
+        // Evaluates the state of the board and returns a score according to the
+        // weights
         float evaluateBoard() const;
 
-        // Calculates the best move to make - as a sequence of commands
-        void getBestMove( std::vector<moves> & );
+        void getBestMove( std::vector< moves > & );
 
     public:
         Ai( QuadrisGame * , Board * );
-        // Calculates the best move according to the weights, and executes the
-        // appropriate commands.
-        void makeNextMove( std::vector< std::string > & );
+        void getNextMove( std::vector< std::string > & );
         
 };
 

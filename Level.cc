@@ -23,26 +23,26 @@ Level::Level( Board * board , QuadrisGame * game , int seed )
     findNextBlockType();
 } // Level
 
-char Level::numCharTransfer( int i ) {
-    char returnChar = 0;
+blockType Level::numToType( int i ) {
+    blockType returnType;
     switch ( i ) {
-        case 0 : returnChar = 'I';
+        case 0 : returnType = I;
                  break;
-        case 1 : returnChar = 'J';
+        case 1 : returnType = J;
                  break;
-        case 2 : returnChar = 'L';
+        case 2 : returnType = L;
                  break;
-        case 3 : returnChar = 'O';
+        case 3 : returnType = O;
                  break;
-        case 4 : returnChar = 'S';
+        case 4 : returnType = S;
                  break;
-        case 5 : returnChar = 'Z';
+        case 5 : returnType = Z;
                  break;
-        case 6 : returnChar = 'T';
+        case 6 : returnType = T;
     } // switch
 
-    return returnChar;
-} // numCharTransfer()
+    return returnType;
+} // numToType()
 
 int Level::generateNumber() {
     int num;
@@ -106,19 +106,31 @@ void Level::findNextBlockType() {
     if ( currentLevel == 0 ) {
         //in level 0, read the next input from
         //file sequence.txt directly
-        if ( ! ( blockSequenceFile >> nextBlockType ) ) {
+        char nextBlock;
+        if ( ! ( blockSequenceFile >> nextBlock ) ) {
             //sequence.txt has been read to the end
             //re-open the file
             blockSequenceFile.close();
             blockSequenceFile.open( "sequence.txt" );
-            blockSequenceFile >> nextBlockType;
+            blockSequenceFile >> nextBlock;
+        }
+
+        switch ( nextBlock ) {
+            case 'I' : case 'J' : case 'L' : case 'O' : case 'S' : case 'Z' :
+            case 'T' :
+                nextBlockType = ( blockType ) nextBlock;
+                break;
+            default :
+                cerr << "Your sequence.txt file has an invalid block type. ";
+                cerr << "Get rid of it ;) For now, here's an I." << endl; 
+                nextBlockType = I;
         }
     } // if
     else {
         //level 1 2 and 3
         //will use random number generator
         //and then transfer it to char
-        nextBlockType = this->numCharTransfer( this->generateNumber() );
+        nextBlockType = this->numToType( this->generateNumber() );
     } // else
 } // findNextBlockType()
 
@@ -143,6 +155,7 @@ void Level::levelUp() {
     if ( currentLevel > maxLevel ) {
         currentLevel = maxLevel;
     } // if
+    findNextBlockType();
 } // levelUp()
 
 void Level::levelDown() {
@@ -150,6 +163,7 @@ void Level::levelDown() {
     if ( currentLevel < minLevel ) {
         currentLevel = minLevel;
     } // if
+    findNextBlockType();
 } // levelDown()
 
 void Level::printNext() {
