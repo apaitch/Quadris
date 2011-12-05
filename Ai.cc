@@ -1,5 +1,6 @@
 #include "Ai.h"
 #include "QuadrisGame.h"
+#include "GameSettings.h"
 #include "Board.h"
 #include "Block.h"
 #include <cassert>
@@ -8,7 +9,7 @@ using namespace std;
 
 Ai::Ai( QuadrisGame * game , Board * board ) : game( game ) ,
                                                board( board ) ,
-                                               active_block( 0 ) {
+                                               activeBlock( 0 ) {
 
     // Punish height at which block lands
     weights.push_back(-3.5);
@@ -35,133 +36,133 @@ Ai::Ai( QuadrisGame * game , Board * board ) : game( game ) ,
 float Ai::evaluateBoard() const {
 
     int height = 0; 
-    int filled_rows = 0;
-    int row_transitions = 0;
-    int column_transitions = 0;
+    int filledRows = 0;
+    int rowTransitions = 0;
+    int columnTransitions = 0;
     // A hole is any empty space that has a block above it (since the AI doesn't
     // do tricks with sliding things in).
-    int holes_num = 0;
-    int wells_total = 0;
-    int blockades_total = 0;
+    int holesNum = 0;
+    int wellsTotal = 0;
+    int blockadesTotal = 0;
 
     // find height at which block landed by looking at the tallest point in the
     // block
-    vector< pair<int,int> > block_points;
-    active_block->getPoints( block_points );
+    vector< pair<int,int> > blockPoints;
+    activeBlock->getPoints( blockPoints );
     height = 0;
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        if ( ( num_rows - block_points[i].second ) > height ) {
-            height = num_rows - block_points[i].second;
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        if ( ( numRows - blockPoints[i].second ) > height ) {
+            height = numRows - blockPoints[i].second;
         }
     } 
 
     // find filled rows
-    for ( int i = 0 ; i < num_rows ; ++i ) {
-        if ( (*board).rowFilled[i] == num_columns ) {
-            filled_rows += 1;
+    for ( int i = 0 ; i < numRows ; ++i ) {
+        if ( (*board).filledCellsInRow[i] == numColumns ) {
+            filledRows += 1;
         }
     }
 
     // find row transitions
-    for ( int y = num_rows - height ; y < num_rows ; ++y ) {
-        bool prev_empty = ( (*board).blockPtr[0][y] == 0 ) ? true : false;
+    for ( int y = numRows - height ; y < numRows ; ++y ) {
+        bool prevEmpty = ( (*board).theBoard[0][y] == 0 ) ? true : false;
 
-        for ( int x = 1 ; x < num_columns ; ++x ) {
-            bool current_empty = ( (*board).blockPtr[x][y] == 0 ) ? true : false;
-            if ( prev_empty != current_empty ) {
-                row_transitions += 1;
+        for ( int x = 1 ; x < numColumns ; ++x ) {
+            bool currentEmpty = ( (*board).theBoard[x][y] == 0 ) ? true : false;
+            if ( prevEmpty != currentEmpty ) {
+                rowTransitions += 1;
             }
-            prev_empty = current_empty;
+            prevEmpty = currentEmpty;
         }
     }
 
-    int num_of_empties = 0;
+    int numOfEmpties = 0;
     // There can only be one well per column
-    int well_depth = 0;
-    int blockade_size = 0;
-    bool blockade_started = false;
+    int wellDepth = 0;
+    int blockadeSize = 0;
+    bool blockadeStarted = false;
     // find column transitions and holes
-    for ( int x = 0 ; x < num_columns ; ++x ) {
-        bool prev_empty = ( (*board).blockPtr[x][num_rows - 1] == 0 ) ? true : false;
-        if ( prev_empty ) {
-            num_of_empties += 1;
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        bool prevEmpty = ( (*board).theBoard[x][numRows - 1] == 0 ) ? true : false;
+        if ( prevEmpty ) {
+            numOfEmpties += 1;
 
             // Ugly code to look left and right
-            bool left_occupied = ( x == 0 ) ? true : false;
-            bool right_occupied = ( x == num_columns  - 1 ) ? true : false;
-            if ( ! left_occupied ) {
-                left_occupied = ( (*board).blockPtr[ x-1 ][num_rows - 1] != 0 ) ? true : false;
+            bool leftOccupied = ( x == 0 ) ? true : false;
+            bool rightOccupied = ( x == numColumns  - 1 ) ? true : false;
+            if ( ! leftOccupied ) {
+                leftOccupied = ( (*board).theBoard[ x-1 ][numRows - 1] != 0 ) ? true : false;
             }
-            if ( ! right_occupied ) {
-                right_occupied = ( (*board).blockPtr[ x+1 ][num_rows - 1] != 0 ) ? true : false;
+            if ( ! rightOccupied ) {
+                rightOccupied = ( (*board).theBoard[ x+1 ][numRows - 1] != 0 ) ? true : false;
             }
-            if ( left_occupied && right_occupied ) {
-                well_depth += 1;
+            if ( leftOccupied && rightOccupied ) {
+                wellDepth += 1;
             }
         }
  
-        for ( int y = num_rows - 2 ; y > 0 ; --y ) {
-            bool current_empty = ( (*board).blockPtr[x][y] == 0 ) ? true : false;
-            if ( current_empty ) {
+        for ( int y = numRows - 2 ; y > 0 ; --y ) {
+            bool currentEmpty = ( (*board).theBoard[x][y] == 0 ) ? true : false;
+            if ( currentEmpty ) {
                 
-                num_of_empties += 1;
-                blockade_started = false;
-                blockades_total += blockade_size;
-                blockade_size = 0;
+                numOfEmpties += 1;
+                blockadeStarted = false;
+                blockadesTotal += blockadeSize;
+                blockadeSize = 0;
 
                 // Look left and right
-                bool left_occupied = ( x == 0 ) ? true : false;
-                bool right_occupied = ( x == num_columns  - 1 ) ? true : false;
-                if ( ! left_occupied ) {
-                    left_occupied = ( (*board).blockPtr[ x-1 ][y] != 0 ) ? true : false;
+                bool leftOccupied = ( x == 0 ) ? true : false;
+                bool rightOccupied = ( x == numColumns  - 1 ) ? true : false;
+                if ( ! leftOccupied ) {
+                    leftOccupied = ( (*board).theBoard[ x-1 ][y] != 0 ) ? true : false;
                 }
-                if ( ! right_occupied ) {
-                    right_occupied = ( (*board).blockPtr[ x+1 ][y] != 0 ) ? true : false;
+                if ( ! rightOccupied ) {
+                    rightOccupied = ( (*board).theBoard[ x+1 ][y] != 0 ) ? true : false;
                 }
-                if ( left_occupied && right_occupied ) {
-                    well_depth += 1;
+                if ( leftOccupied && rightOccupied ) {
+                    wellDepth += 1;
                 }
 
             }
-            else if ( blockade_started ) {
-                blockade_size += 1;
+            else if ( blockadeStarted ) {
+                blockadeSize += 1;
             }
             
-            if ( prev_empty != current_empty ) {
-                column_transitions += 1;
-                if ( current_empty == false ) {
-                    holes_num += num_of_empties;
-                    num_of_empties = 0;
-                    blockade_started = true;
-                    blockade_size += 1;
-                    well_depth = 0;
+            if ( prevEmpty != currentEmpty ) {
+                columnTransitions += 1;
+                if ( currentEmpty == false ) {
+                    holesNum += numOfEmpties;
+                    numOfEmpties = 0;
+                    blockadeStarted = true;
+                    blockadeSize += 1;
+                    wellDepth = 0;
                 }
             }
-            prev_empty = current_empty;
+            prevEmpty = currentEmpty;
         }
-        wells_total += well_depth;
-        well_depth = 0;
-        if ( blockade_started ) {
-            blockades_total += blockade_size;
+        wellsTotal += wellDepth;
+        wellDepth = 0;
+        if ( blockadeStarted ) {
+            blockadesTotal += blockadeSize;
         }
-        blockade_size = 0;
-        blockade_started = false;
-        num_of_empties = 0;
+        blockadeSize = 0;
+        blockadeStarted = false;
+        numOfEmpties = 0;
     }
 
     float score =
         weights[0] * height +
-        weights[1] * holes_num +
-        weights[2] * filled_rows +
-        weights[3] * row_transitions +
-        weights[4] * column_transitions +
-        weights[5] * wells_total +
-        weights[6] * blockades_total;
+        weights[1] * holesNum +
+        weights[2] * filledRows +
+        weights[3] * rowTransitions +
+        weights[4] * columnTransitions +
+        weights[5] * wellsTotal +
+        weights[6] * blockadesTotal;
 
-    /*cout << "Height: " << height << " holes: " << holes_num << " filled rows: " <<
-filled_rows << " row_transitions: " << row_transitions << " col_transitions: "
-<< column_transitions << " wells_total: " << wells_total << " blockades_total: "
-<< blockades_total << " final score: " << score << endl;*/
+    /*cout << "Height: " << height << " holes: " << holesNum << " filled rows: " <<
+filledRows << " rowTransitions: " << rowTransitions << " colTransitions: "
+<< columnTransitions << " wellsTotal: " << wellsTotal << " blockadesTotal: "
+<< blockadesTotal << " final score: " << score << endl;*/
     return score;
 }
 
@@ -173,48 +174,48 @@ filled_rows << " row_transitions: " << row_transitions << " col_transitions: "
  * be true because there is no alternating human/AI control - it's either
  * all AI or all player.
  */
-void Ai::getBestMove( vector<moves> & best_moves_sequence ) {
-    active_block = board->getActiveBlock();
+void Ai::getBestMove( vector<moves> & bestMovesSequence ) {
+    activeBlock = board->getActiveBlock();
 
-    int num_rotations = 0;
-    switch ( active_block->getType() ) {
+    int numRotations = 0;
+    switch ( activeBlock->getType() ) {
         case 'O' :
-            num_rotations = 0;
+            numRotations = 0;
             break;
         case 'Z' : case 'S' : case 'I' :
-            num_rotations = 1;
+            numRotations = 1;
             break;
         case 'T' : case 'L' : case 'J' :
-            num_rotations = 3;
+            numRotations = 3;
     }
 
-    float high_score = 0;
-    vector<moves> moves_sequence;
-    int num_of_combinations_considered = 0;
-    for ( int rotation = 0 ; rotation <= num_rotations ; ++rotation ) {
+    float highScore = 0;
+    vector<moves> movesSequence;
+    int numOfCombinationsConsidered = 0;
+    for ( int rotation = 0 ; rotation <= numRotations ; ++rotation ) {
         // TODO: Change Block to report success to prevent redundant
         // calculations when can't move right anymore.
-        for ( int right_move = 0 ; right_move <= num_columns ; ++right_move ) {
-            moves_sequence.clear();
+        for ( int rightMove = 0 ; rightMove <= numColumns ; ++rightMove ) {
+            movesSequence.clear();
             for ( int i = 0 ; i < rotation ; ++i ) {
-                active_block->rightRotate();
-                moves_sequence.push_back( clockwise );
+                activeBlock->rightRotate();
+                movesSequence.push_back( clockwise );
             }
-            for ( int i = 0 ; i < right_move ; ++i ) {
-                active_block->moveRight();
-                moves_sequence.push_back( right );
+            for ( int i = 0 ; i < rightMove ; ++i ) {
+                activeBlock->moveRight();
+                movesSequence.push_back( right );
             }
-            active_block->drop();
-            moves_sequence.push_back( drop );
+            activeBlock->drop();
+            movesSequence.push_back( drop );
 
             board->print();
             float score = evaluateBoard();
-            if ( ( high_score == 0 ) || ( score > high_score ) ) {
-                high_score = score;
-                best_moves_sequence = moves_sequence;
+            if ( ( highScore == 0 ) || ( score > highScore ) ) {
+                highScore = score;
+                bestMovesSequence = movesSequence;
             }
-            num_of_combinations_considered += 1;
-            active_block->reset();
+            numOfCombinationsConsidered += 1;
+            activeBlock->reset();
         }
     }
 
@@ -226,14 +227,14 @@ void Ai::getBestMove( vector<moves> & best_moves_sequence ) {
  * is the way for the game to call the AI!
  */
 void Ai::makeNextMove( vector<string> & commands ) {
-    vector<moves> best_moves_sequence;
-    best_moves_sequence.clear();
+    vector<moves> bestMovesSequence;
+    bestMovesSequence.clear();
     // This is the key call here.
-    getBestMove( best_moves_sequence );
+    getBestMove( bestMovesSequence );
 
     commands.clear();
-    for( unsigned int i = 0 ; i < best_moves_sequence.size() ; ++i ) {
-        switch ( best_moves_sequence[i] ) {
+    for( unsigned int i = 0 ; i < bestMovesSequence.size() ; ++i ) {
+        switch ( bestMovesSequence[i] ) {
             case right : 
                 commands.push_back( "right" );
                 break;

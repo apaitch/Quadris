@@ -1,41 +1,42 @@
-#include "QuadrisGame.h"
 #include <string>
 #include <cstdlib>
 #include <iostream>
 
+#include "QuadrisGame.h"
+
 using namespace std;
 
 int main( int argc , char * argv[] ) {
-    bool text_only = false;
-    bool ai_on = false;
+    bool textOnly = false;
+    bool aiOn = false;
     int seed = -1;
 
-    bool seed_num_next = false;
+    bool seedNumNext = false;
     for ( int i = 1 ; i < argc ; ++i ) {
-        if ( seed_num_next ) {
+        if ( seedNumNext ) {
             seed = atoi( argv[i] );
-            seed_num_next = false;
+            seedNumNext = false;
             continue;
-        }
+        } // if
 
         string argument = argv[i];
         // Only taking into account the first appearance of any flag. Subsequent
         // appearances have no effect.
-        if ( ( argument.compare("-text") == 0 ) && ( ! text_only ) ) {
-            text_only = true;
-        }
+        if ( ( argument.compare("-text") == 0 ) && ( ! textOnly ) ) {
+            textOnly = true;
+        } // if
         else if ( ( argument.compare( "-seed" ) == 0 ) && ( seed == -1 ) ) {
-            seed_num_next = true;
-        }
-        else if ( ( argument.compare( "-ai" ) == 0 ) && ( ! ai_on ) ) {
-            ai_on = true;
-        }
+            seedNumNext = true;
+        } // else if
+        else if ( ( argument.compare( "-ai" ) == 0 ) && ( ! aiOn ) ) {
+            aiOn = true;
+        } // else if
         else {
             cerr << "Invalid flag: " << argument << endl;
-        }
-    }
+        } // else if
+    } // for
 
-    QuadrisGame quadris ( text_only , ai_on , seed );
+    QuadrisGame quadris ( textOnly , aiOn , seed );
     quadris.runGameLoop();
     return 0;
-}
+} // main()

@@ -37,7 +37,7 @@ Xwindow::Xwindow( int width , int height ) {
     Colormap cmap;
     char color_vals[11][15] = { "white" , "black" , "red" , "green" ,
                                 "blue" , "cyan" , "yellow" , "magenta" ,
-                                "orange" , "brown" , "rgb:0a/0a/0a" };
+                                "orange" , "brown" , "rgb:15/15/15" };
 
     cmap = DefaultColormap( display,DefaultScreen( display ) );
     for( int i = 0 ; i < 11 ; ++i ) {
@@ -72,12 +72,14 @@ Xwindow::~Xwindow() {
 void Xwindow::fillBorderedRectangle( int x, int y, int width, int height, int colour ) {
     XSetForeground( display, graphics_context, colours[colour] );
     XFillRectangle( display, window, graphics_context, x+2, y+2, width-4, height-4 );
+    usleep( 10 );
     XSetForeground( display, graphics_context, colours[Black] );
 }
 
 void Xwindow::fillRectangle( int x, int y, int width, int height, int colour ) {
     XSetForeground( display, graphics_context, colours[colour] );
     XFillRectangle( display, window, graphics_context, x+2, y+2, width-4, height-4 );
+    usleep( 10 );
     XSetForeground( display, graphics_context, colours[Black] );
 }
 

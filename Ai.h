@@ -1,5 +1,5 @@
-#ifndef __AI_H__
-#define __AI_H__
+#ifndef _AIH__
+#define _AIH__
 
 #include <vector>
 #include <string>
@@ -18,7 +18,7 @@ class Ai {
 
         QuadrisGame * game;
         Board * board;
-        Block * active_block;
+        Block * activeBlock;
 
         std::vector<float> weights;
          
@@ -27,7 +27,7 @@ class Ai {
         float evaluateBoard() const;
 
         // Calculates the best move to make - as a sequence of commands
-        void getBestMove( std::vector<moves> & best_moves_sequence );
+        void getBestMove( std::vector<moves> & );
 
     public:
         Ai( QuadrisGame * , Board * );

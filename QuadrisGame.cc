@@ -5,104 +5,95 @@
 #include "Block.h"
 #include "XWindow.h"
 #include "CommandTrie.h"
+#include "GameSettings.h"
 #include "ScoreBoard.h"
 #include <cstdlib>
 
 using namespace std;
 
-QuadrisGame::QuadrisGame( bool text_only , bool ai_on , int seed ) 
+QuadrisGame::QuadrisGame( bool textOnly , bool aiOn , int seed ) 
                            : board( new Board(this) ) ,
-                             command_interpreter( new CommandTrie ) ,
+                             commandInterpreter( new CommandTrie ) ,
                              level( new Level ( board , this , seed ) ) ,
-                             score_board( new ScoreBoard ( level->getLevel() ) ) ,
-                             window( 0 ) ,
-                             smallWindow( 0 ) ,
+                             scoreBoard( new ScoreBoard ( level->getLevel() ) ) ,
+                             mainWindow( 0 ) ,
+                             nextWindow( 0 ) ,
                              ai ( 0 ) ,
-                             text_only( text_only ) {
-    if ( ! text_only ) {
-        window = new Xwindow;
-	smallWindow=new Xwindow(200,200);
+                             textOnly( textOnly ) {
+    if ( ! textOnly ) {
+        mainWindow = new Xwindow( mainWindowWidth , mainWindowHeight );
+        nextWindow = new Xwindow( nextWindowWidth , nextWindowHeight );
+    } // if
 
-    }
-
-    if ( ai_on ) {
+    if ( aiOn ) {
         ai = new Ai ( this , board );
-    }
+    } // if
 
-    min_padding = 4;
-    board_height = window_height - 2 * min_padding;
-    board_width = board_height * num_columns / num_rows;
-    board_posn.first = min_padding;
-    board_posn.second = min_padding;
-
-    score_board_posn.first = 2 * min_padding + board_width;
-    score_board_posn.second = min_padding;
-    score_board_width = window_width - board_width - 3 * min_padding;
-    score_board_height = window_height / 5;
     initialize(); 
 } // QuadrisGame 
 
 QuadrisGame::~QuadrisGame() {
-
-    delete window;
+    delete mainWindow;
     delete board;
-    delete command_interpreter;
+    delete commandInterpreter;
     delete level;
-    delete score_board;
+    delete scoreBoard;
 } 
 
 void QuadrisGame::initialize() {
-    command_interpreter->addCommand( "left" , &QuadrisGame::moveLeft );
-    command_interpreter->addCommand( "right" , &QuadrisGame::moveRight );
-    command_interpreter->addCommand( "clockwise" , &QuadrisGame::rightRotate );
-    command_interpreter->addCommand( "counterclockwise" , &QuadrisGame::leftRotate );
-    command_interpreter->addCommand( "down" , &QuadrisGame::moveDown );
-    command_interpreter->addCommand( "drop" , &QuadrisGame::drop );
-    command_interpreter->addCommand( "levelup" , &QuadrisGame::levelUp );
-    command_interpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
-    command_interpreter->addCommand( "restart" , &QuadrisGame::reset );
-    board->setActiveBlock( level->createNew() );
+    commandInterpreter->addCommand( "left" , &QuadrisGame::moveLeft );
+    commandInterpreter->addCommand( "right" , &QuadrisGame::moveRight );
+    commandInterpreter->addCommand( "clockwise" , &QuadrisGame::rightRotate );
+    commandInterpreter->addCommand( "counterclockwise" , &QuadrisGame::leftRotate );
+    commandInterpreter->addCommand( "down" , &QuadrisGame::moveDown );
+    commandInterpreter->addCommand( "drop" , &QuadrisGame::drop );
+    commandInterpreter->addCommand( "levelup" , &QuadrisGame::levelUp );
+    commandInterpreter->addCommand( "leveldown" , &QuadrisGame::levelDown );
+    commandInterpreter->addCommand( "restart" , &QuadrisGame::reset );
+    board->setActiveBlock( level->getNextBlock() );
+
     if ( ai != 0 ) {
         levelUp( 4 );
-    }
+    } // if
+
     output();
 } // initialize()
 
-void QuadrisGame::lineCleared( int num_cleared ) {
-    score_board->linesCleared( num_cleared );
+void QuadrisGame::lineCleared( int numCleared ) {
+    scoreBoard->linesCleared( numCleared );
 }
 
 void QuadrisGame::blockCleared( int level ) {
-    score_board->blockCleared( level );
+    scoreBoard->blockCleared( level );
 }
 
 // Take in and process one command.
 bool QuadrisGame::processInput() {
-    string full_command;
+    string fullCommand;
 
-    if ( cin >> full_command ) {
+    if ( cin >> fullCommand ) {
         string command;
         int multiplier = 1;
 
         // If there is a numeric input, get multiplier
-        if ( full_command[0] >= '0' && full_command[0] <= '9' ) {
+        if ( fullCommand[0] >= '0' && fullCommand[0] <= '9' ) {
             multiplier = 0;
-            for ( unsigned int i = 0 ; i < full_command.size() ; ++i ) {
-                char next_char = full_command[i];
-                if ( next_char >= '0' && next_char <= '9' ) {
-                   multiplier = multiplier * 10 + (next_char - 48); 
+            for ( unsigned int i = 0 ; i < fullCommand.size() ; ++i ) {
+                char nextChar = fullCommand[i];
+                if ( nextChar >= '0' && nextChar <= '9' ) {
+                   multiplier = multiplier * 10 + (nextChar - 48); 
                 } // if
                 else {
-                    command = full_command.substr(i);
+                    command = fullCommand.substr(i);
                     break;
                 } // else
             } // for
         } // if
         else {
-            command = full_command;
+            command = fullCommand;
         } // else
 
-        commandFunctPtr commandFn = command_interpreter->findCommand( command );    
+        commandFunctPtr commandFn = commandInterpreter->findCommand( command );    
         if ( commandFn != 0 ) {
             CALL_MEMBER_FN(*this , commandFn)( multiplier );
         } // if
@@ -114,7 +105,7 @@ bool QuadrisGame::processInput() {
 } // processInput()
 
 void QuadrisGame::print() {
-    score_board->print();
+    scoreBoard->print();
     cout << "----------" << endl;
     board->print();
     cout << "----------" << endl;
@@ -123,23 +114,20 @@ void QuadrisGame::print() {
 }
 
 void QuadrisGame::draw() {
-    window->fillRectangle( 0 , 0 , window_width , window_height );
+    mainWindow->fillRectangle( 0 , 0 , mainWindowWidth , mainWindowHeight);
+    nextWindow->fillRectangle( 0 , 0 , nextWindowWidth , nextWindowHeight);
 
-    board->draw( board_posn.first , board_posn.second , 
-                 board_width , board_height , window );
+    board->draw( mainWindow );
 
-    score_board->draw( score_board_posn.first , 
-                       score_board_posn.second ,
-                       score_board_width , score_board_height , 
-                       window );
+    scoreBoard->draw( mainWindow );
 
-    level->drawNext(smallWindow);
+    level->drawNext( nextWindow );
     
-}
+} // draw()
 
 void QuadrisGame::output() {
     print();
-    if ( ! text_only ) {
+    if ( ! textOnly ) {
         draw();
     } // if
 }
@@ -149,22 +137,22 @@ void QuadrisGame::runGameLoop() {
         while ( processInput() ) {
             output();
         } // while
-    }
+    } // if
     else {
         while ( true ) {
             vector< string > commands;
             ai->makeNextMove( commands );
             for ( unsigned int i = 0 ; i < commands.size() ; ++i ) {
                 commandFunctPtr commandFn = 
-                    command_interpreter->findCommand( commands[i] );
+                    commandInterpreter->findCommand( commands[i] );
                 if ( commandFn != 0 ) {
                     CALL_MEMBER_FN(*this , commandFn)( 1 );
                     output();
                     usleep( 200000 );
                 } // if
-            }
-        }
-    }
+            } // for
+        } // while
+    } // else
 }
 
 // -------------------------
@@ -201,12 +189,12 @@ void QuadrisGame::moveDown( int multiplier ) {
 }
 
 void QuadrisGame::drop( int multiplier ) {
-    bool game_over = false;
+    bool gameOver = false;
     for ( int i = 0 ; i < multiplier ; ++i ) {
         board->getActiveBlock()->drop();
         board->examine();
-        game_over = board->setActiveBlock( level->createNew() );
-        if ( game_over ) {
+        gameOver = board->setActiveBlock( level->getNextBlock() );
+        if ( gameOver ) {
             reset( 1 );
             break;
         } // if
@@ -215,35 +203,36 @@ void QuadrisGame::drop( int multiplier ) {
 
 void QuadrisGame::levelUp( int multiplier ) {
     for( int times = 0; times < multiplier ; ++times ) {
-        level->levelup();
+        level->levelUp();
     } // for
-    score_board->setLevel( level->getLevel() );
+    scoreBoard->setLevel( level->getLevel() );
 }
 
 void QuadrisGame::levelDown( int multiplier ) {
     for( int times = 0 ; times < multiplier ; ++times ) {
-        level->leveldown();
+        level->levelDown();
     } // for
-    score_board->setLevel( level->getLevel() );
+    scoreBoard->setLevel( level->getLevel() );
 }
 
 void QuadrisGame::reset( int multiplier ) {
     delete board;
     delete level;
+
     if ( ai != 0 ) {
         delete ai;
-    }
+    } // if
 
     board = new Board(this);
     level = new Level ( board, this );
     
     if ( ai != 0 ) {
         ai = new Ai( this , board );
-    }
+    } // if
 
-    score_board->resetScore();
-    score_board->setLevel( level->getLevel() );
-    board->setActiveBlock( level->createNew() );
+    scoreBoard->resetScore();
+    scoreBoard->setLevel( level->getLevel() );
+    board->setActiveBlock( level->getNextBlock() );
     output();
 
 } // reset
@@ -251,6 +240,4 @@ void QuadrisGame::reset( int multiplier ) {
 // -------------------------
 // End of Command Functions
 // -------------------------
-
-
 

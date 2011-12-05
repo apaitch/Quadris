@@ -6,21 +6,20 @@
 #include <vector>
 #include <map>
 #include "Colours.h"
+#include "GameSettings.h"
 
 class Board;
-
-const int points_per_block = 4;
 
 class Block {
     private:
         Board * board;
         char type;
-        colour the_colour;
+        colour theColour;
         std::pair<int , int> origin;
-        std::pair<int , int> starting_origin;
-        int birth_level;
-        int num_living_cells;
-        std::pair<int , int> points [points_per_block];
+        std::pair<int , int> startingOrigin;
+        int birthLevel;
+        int numLivingCells;
+        std::pair<int , int> points [pointsPerBlock];
         
         void tryTransformation( std::pair<int , int> [] , 
                                 std::pair<int , int> );

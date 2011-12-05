@@ -1,53 +1,62 @@
 #include "ScoreBoard.h"
 #include "XWindow.h"
 #include "Colours.h"
+#include "GameSettings.h"
 #include <iostream>
 #include <sstream>
 
 using namespace std;
 
-ScoreBoard::ScoreBoard( int level ) : high_score ( 0 ) ,
-                                      current_score ( 0 ) ,
-                                      current_level ( level ) {}
+ScoreBoard::ScoreBoard( int level ) : highScore ( 0 ) ,
+                                      currentScore ( 0 ) ,
+                                      currentLevel ( level ) {}
 
 void ScoreBoard::blockCleared( int level ) {
-  current_score += ( level + 1 ) * (level + 1 );
-  if ( current_score > high_score ) {
-    high_score = current_score;
+  currentScore += ( level + 1 ) * (level + 1 );
+  if ( currentScore > highScore ) {
+    highScore = currentScore;
   } // if
 }
 
-void ScoreBoard::linesCleared( int num_lines ) {
-    current_score += ( num_lines + current_level ) * 
-             ( num_lines + current_level );
-    if ( current_score > high_score ) {
-        high_score = current_score;
+void ScoreBoard::linesCleared( int numLines ) {
+    currentScore += ( numLines + currentLevel ) * 
+             ( numLines + currentLevel );
+    if ( currentScore > highScore ) {
+        highScore = currentScore;
     } // if
 }
 
 void ScoreBoard::resetScore() {
-    current_score = 0;
+    currentScore = 0;
 }
 void ScoreBoard::setLevel( int level ) {
-    current_level = level;
+    currentLevel = level;
 }
 
 void ScoreBoard::print() {
-    cout << "Level:     " << current_level << endl;
-    cout << "Score:     " << current_score << endl;
-    cout << "Hi Score:  " << high_score << endl;
+    cout << "Level:     " << currentLevel << endl;
+    cout << "Score:     " << currentScore << endl;
+    cout << "Hi Score:  " << highScore << endl;
 }
 
-void ScoreBoard::draw( int x_coord , int y_coord ,
-                       int width , int height , Xwindow * window ) {
+void ScoreBoard::draw( Xwindow * window ) {
     ostringstream sstream;
-    sstream << "LEVEL: " << current_level;
-    window->drawString( x_coord + 5 , y_coord + 22 , sstream.str() , Yellow );
+    sstream << " LEVEL: " << currentLevel;
+    sstream << " SCORE: " << currentScore;
+    sstream << " HI SCORE: " << highScore;
+
+    window->drawString( scoreBoardPosn.first + 5 , 
+                        scoreBoardPosn.second + 20 , 
+                        sstream.str() , Yellow );
+/*
+    sstream << "LEVEL: " << currentLevel;
+    window->drawString( xCoord + 5 , yCoord + 22 , sstream.str() , Yellow );
     sstream.str("");
-    sstream << "SCORE: " << current_score;
-    window->drawString( x_coord + 5 , y_coord + 42 , sstream.str() , Yellow );
+    sstream << "SCORE: " << currentScore;
+    window->drawString( xCoord + 5 , yCoord + 42 , sstream.str() , Yellow );
     sstream.str("");
-    sstream << "HI SCORE: " << high_score;
-    window->drawString( x_coord + 5 , y_coord + 62 , sstream.str() , Yellow );
+    sstream << "HI SCORE: " << highScore;
+    window->drawString( xCoord + 5 , yCoord + 62 , sstream.str() , Yellow );
+*/
 }
 

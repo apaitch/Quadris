@@ -7,36 +7,30 @@
 class Block;
 class Board;
 class QuadrisGame;
-
-const int max_level = 3;
-const int min_level = 0;
-
 class Xwindow;
 
-class Level{
- private:
-  int currentLevel; //stores the level currently in
-  std::ifstream fs; //store the content in "sequence.txt"
-  Board *b; //a ptr to the board
-  char nextBlock; //record the type of the next block
-  PRNG prng; //random number generator
-  //int seed;  //record the seed for PRNG
-  QuadrisGame *game; //store the pointer to the game
+class Level {
+    private:
+        int currentLevel; //stores the level currently in
+        char nextBlockType; //record the type of the next block
+        std::ifstream blockSequenceFile; //store the content in "sequence.txt"
+        PRNG randomNumGenerator;
+        Board * board;
+        QuadrisGame * game;
 
-  char numCharTransfer(int i);
-  void restart();
-  int numGenerator();
-  void findNext(); //find the next block's type
+        char numCharTransfer( int );
+        void restart();
+        int generateNumber();
+        void findNextBlockType();
 
- public:
-  Level( Board * , QuadrisGame * , int seed = -1 );
-  Block* createNew();
-  int getLevel();
-  void levelup();     // increase the level by 1
-  void leveldown();    //decrease the level by 1
-  void printNext();  //print the type of next block
-  void drawNext(Xwindow *); //draw the next block in window
-
+    public:
+        Level( Board * , QuadrisGame * , int seed = -1 );
+        Block * getNextBlock();
+        int getLevel();
+        void levelUp();     // increase the level by 1
+        void levelDown();    //decrease the level by 1
+        void printNext();  //print the type of next block
+        void drawNext(Xwindow *); //draw the next block in window
 };
 
 #endif

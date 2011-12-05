@@ -1,5 +1,5 @@
-#ifndef __COMMAND_TRIE_H__
-#define __COMMAND_TRIE_H__
+#ifndef __COMMANDTRIE_H__
+#define __COMMANDTRIE_H__
 
 #include <string>
 #include <list>
@@ -27,10 +27,10 @@ struct CommandTrieNode {
 
 class CommandTrie {
     private:
-        CommandTrieNode * root_node;
+        CommandTrieNode * rootNode;
     public:
-        CommandTrie() : root_node( new CommandTrieNode ) { };
-        ~CommandTrie() { delete root_node; };
+        CommandTrie() : rootNode( new CommandTrieNode ) { };
+        ~CommandTrie() { delete rootNode; };
 
         void addCommand( const std::string & , commandFunctPtr );
         void changeCommand( const std::string & , const std::string & );

@@ -5,9 +5,9 @@ class Xwindow;
 
 class ScoreBoard {
     private:
-        int high_score;
-        int current_score;
-        int current_level;
+        int highScore;
+        int currentScore;
+        int currentLevel;
 
     public:
         ScoreBoard( int );
@@ -19,7 +19,7 @@ class ScoreBoard {
         void setLevel( int );
 
         void print();
-        void draw( int , int , int , int , Xwindow * );
+        void draw( Xwindow * );
         
 };
 

@@ -4,37 +4,35 @@
 #include <utility>
 #include <vector>
 #include <cassert>
-#include "Colours.h"
+
+#include "GameSettings.h"
 
 class Xwindow;
 class Block;
 class QuadrisGame;
 class Ai;
 
-const int num_columns = 10;
-const int num_rows = 18;
-
 class Board {
- private:
-    Block *activeBlock; //store the pointer to the active block
-    int rowFilled[ num_rows ]; //record the number of filled cells in each row
-    void removeARow(int); //remove a whole row
-    Block* blockPtr[ num_columns  ][ num_rows ];
-    QuadrisGame *game; //store the pointer to the game
+    private:
+        Block * activeBlock; 
+        int filledCellsInRow[ numRows ]; 
+        void removeRow( int ); //remove a whole row
+        Block * theBoard[ numColumns  ][ numRows ];
+        QuadrisGame *game; //store the pointer to the game
 
-public:
-    Board(QuadrisGame *game);
-    ~Board();
-    Block * getActiveBlock();
-    bool setActiveBlock( Block * );
-    bool cellOccupied( Block * , std::pair<int,int> );
-    void addBlock( Block * );     //add a new block
-    void deleteBlock( Block * );     //remove a whole block
-    void print();     //print out the board
-    void draw( int , int , int , int , Xwindow * );
-    void examine();    //check if any row is completely filled
-    
-    friend class Ai;
+    public:
+        Board( QuadrisGame * );
+        ~Board();
+        Block * getActiveBlock();
+        bool setActiveBlock( Block * );
+        bool cellOccupied( Block * , std::pair<int,int> );
+        void addBlock( Block * );     //add a new block
+        void deleteBlock( Block * );     //remove a whole block
+        void print();     //print out the board
+        void draw( Xwindow * );
+        void examine();    //check if any row is completely filled
+ 
+        friend class Ai;
 };
 
 #endif

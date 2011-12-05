@@ -1,225 +1,213 @@
 #include <iostream>
 #include "Board.h"
 #include "Block.h"
+#include "Colours.h"
 #include "QuadrisGame.h"
 #include "XWindow.h"
 
 using namespace std;
 
-Board::Board(QuadrisGame *game):game(game)
-{
-  //initial all block pointers to NULL
-  for(int x=0;x<num_columns;++x)
-    {
-      for(int y=0;y<num_rows;++y)
-	blockPtr[x][y]=NULL;
-    }
-  
-  //initiate the number of filled cells to be zero
-  //for all rows
-  for(int y=0;y<num_rows;++y) {
-    rowFilled[y]=0;
-  }
-}
+Board::Board( QuadrisGame *game ):game( game ) {
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        for ( int y = 0 ; y < numRows ; ++y ) {
+            theBoard[ x ][ y ] = 0; 
+        } // for
+    } // for
+
+    //initiate the number of filled cells to be zero
+    //for all rows
+    for ( int y = 0 ; y < numRows ; ++y ) {
+        filledCellsInRow[ y ] = 0;
+    } // for
+} // Board()
 
 Board::~Board() {
-  //examine each cell, if not Null, delete the cell
-  //if a block is totally deleted, 
-  //release the memory for the block
-  for ( int x = 0 ; x < num_columns ; ++x ) {
-    for ( int y = 0 ; y < num_rows ; ++y ) {
-      if(blockPtr[x][y]!=NULL){
-	bool removed=blockPtr[x][y]->deleteCell();
-	if(removed)
-	  {
-	    delete blockPtr[x][y];
-	  }
-      }
-    }
-  }
-}
+    //examine each cell, if not Null, delete the cell
+    //if a block is totally deleted, 
+    //release the memory for the block
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        for ( int y = 0 ; y < numRows ; ++y ) {
+            if ( theBoard[ x ][ y ] != 0 ) {
+                bool removed = theBoard[ x ][ y ]->deleteCell();
+                if ( removed ) {
+                    delete theBoard[ x ][ y ];
+                } // if
+            } // if
+        } // for
+    } // for
+} // ~Board()
 
 Block * Board::getActiveBlock() {
     return activeBlock;
-}
+} // getActiveBlock()
 
-bool Board::setActiveBlock( Block * b ) {
-    vector< pair<int , int> > block_points;
-    b->getPoints( block_points );
-    bool game_over = false;
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        if ( cellOccupied( b , block_points[i] ) ) {
-            game_over = true;
+bool Board::setActiveBlock( Block * block ) {
+    vector< pair<int , int> > blockPoints;
+    block->getPoints( blockPoints );
+    bool gameOver = false;
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        if ( cellOccupied( block , blockPoints[ i ] ) ) {
+            gameOver = true;
             break;
-        }
-    }
+        } // if
+    } // for
 
-    if ( ! game_over ) {
-        activeBlock = b;
+    if ( ! gameOver ) {
+        activeBlock = block;
         addBlock ( activeBlock );
-    }
-    return game_over;
-}
+    } // if
+    return gameOver;
+} // setActiveBlock()
 
 // Checks if the specified cell is occupied by a block different from the
 // specified block.
-bool Board::cellOccupied( Block * block , pair<int,int> point )
-{
+bool Board::cellOccupied( Block * block , pair<int,int> point ) {
     bool occupied = true;
-    if ( point.first >= 0 && point.first < num_columns
-         && point.second >= 0 && point.second < num_rows ) {  
-        if ( blockPtr[point.first][point.second] == 0 ||
-             blockPtr[point.first][point.second] == block ) {
+
+    if ( point.first >= 0 && point.first < numColumns &&
+         point.second >= 0 && point.second < numRows ) {  
+        if ( theBoard[ point.first ][ point.second ] == 0 ||
+             theBoard[ point.first ][ point.second ] == block ) {
             occupied = false;
-        }
-    }
+        } // if
+    } // if
 
     return occupied;
+} // cellOccupied()
+
+void Board::addBlock( Block * block ) {
+    vector< pair<int , int> > blockPoints;
+    block->getPoints( blockPoints );
+
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        int x = blockPoints[ i ].first;
+        int y = blockPoints[ i ].second;
+        theBoard[ x ][ y ] = block;
+        filledCellsInRow[ y ] += 1;
+    } // for
+} // addBlock()
+
+void Board::deleteBlock( Block * block ) {
+    vector< pair<int , int> > blockPoints;
+    block->getPoints( blockPoints );
+
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        int x = blockPoints[ i ].first;
+        int y = blockPoints[ i ].second;
+        theBoard[ x ][ y ] = 0;
+        filledCellsInRow[ y ] -= 1;
+    } // for
 }
 
-void Board::addBlock( Block * b )
-{
-    vector< pair<int , int> > block_points;
-    b->getPoints( block_points );
-
-  for(int i=0;i<points_per_block;++i)
-    {
-      int x=block_points[i].first;
-      int y=block_points[i].second;
-      blockPtr[x][y]=b;
-      rowFilled[y]+=1;
-    }
-}
-
-void Board::deleteBlock( Block * b ) //used when delete the whole block
-{
-    vector< pair<int , int> > block_points;
-    b->getPoints( block_points );
-
-  for(int i=0;i<points_per_block;++i)
-    {
-      int x=block_points[i].first;
-      int y=block_points[i].second;
-      blockPtr[x][y]=0;
-      rowFilled[y]-=1;
-    }
-}
-
-void Board::draw( int x_coord , int y_coord , int width , int height , Xwindow * window ) {
-    int block_height = height / num_rows;
-    int block_width = width / num_columns;    
-    
-    //find out the current position of the current block
-    vector<pair<int,int> > pos;
-    activeBlock->getPoints(pos);
+void Board::draw( Xwindow * window ) {
     //find out how much the block could drop
-    int maxdrop=activeBlock->calculateDrop();
+    int maxDrop = activeBlock->calculateDrop();
 
-    window->fillRectangle( x_coord , y_coord , width, height, Grey );
-    for ( int x = 0 ; x < num_columns ; ++x ) {
-        for ( int y = 0 ; y < num_rows ; ++y ) {
-            if ( blockPtr[x][y] != 0 ) {
-                window->fillBorderedRectangle( x_coord + x * block_width ,
-					       y_coord + y * block_height ,
-					       block_width , block_height ,
-					       blockPtr[x][y]->getColour() );
-            }
-	    else if( (x==pos[0].first && y==pos[0].second+maxdrop)
-		     || (x==pos[1].first && y==pos[1].second+maxdrop)
-		     ||(x==pos[2].first && y==pos[2].second+maxdrop)
-		     ||(x==pos[3].first && y==pos[3].second+maxdrop) )
-	      {
-		window->fillBorderedRectangle( x_coord + x * block_width ,
-					       y_coord + y * block_height ,
-					       block_width , block_height ,
-					       White);
-	      }
-        }
-    }
-}
-
-void Board::print()
-{
-  //find out the current position of the current block
-  vector<pair<int,int> > pos;
-  activeBlock->getPoints(pos);
-  //find out how much the block could drop
-  int maxdrop=activeBlock->calculateDrop();
-
-  for(int y=0;y<num_rows;++y)
-    {
-      for(int x=0;x<num_columns;++x)
-	{
-	  
-          if ( blockPtr[x][y] == 0 ) {
-	    if( (x==pos[0].first && y==pos[0].second+maxdrop)
-		|| (x==pos[1].first && y==pos[1].second+maxdrop)
-		||(x==pos[2].first && y==pos[2].second+maxdrop)
-		||(x==pos[3].first && y==pos[3].second+maxdrop) )
-	    {
-	      cout<<"*";
-	    }
-            else
-	      cout << " ";
-          }
-          else {
-	    cout << blockPtr[x][y]->getType();
-          }
-	}
-      cout<<endl;
-    }
-}
-
-void Board::examine()
-{
-  int numRemovedRow=0; //record how many rows have be removed
-  for(int y=0;y<num_rows;++y)
-    {
-      if(rowFilled[y]==num_columns)
-	{
-	  numRemovedRow+=1;
-	  this->removeARow(y);
-	}
-    }
-  if(numRemovedRow>0)
-    game->lineCleared(numRemovedRow);
-}
-  
-void Board::removeARow(int row_to_rm)
-{
-  assert( row_to_rm < num_rows );
-  int cellLevel;  //record the level of the removed block
-
-  //call the blocks of row i to delete a cell
-  for(int x=0;x<num_columns;++x)
-    {
-      bool removed=blockPtr[x][row_to_rm]->deleteCell();
-      if(removed)
-	{
-	  cellLevel=blockPtr[x][row_to_rm]->getLevel();
-	  game->blockCleared(cellLevel);
-	  delete blockPtr[x][row_to_rm];
-	}
-    }
-  
-  //shift the rows above row i downwards
-  for(int y=row_to_rm;y>0;--y)
-    {
-      for(int x=0;x<num_columns;++x)
-	{
-	  blockPtr[x][y]=blockPtr[x][y-1];
-	}
-      //the record for the # of cells filled for each row
-      //should also be shifted
-      rowFilled[y]=rowFilled[y-1];
+    //find out the current position of the current block
+    vector< pair< int , int > > shadowPos;
+    activeBlock->getPoints( shadowPos );
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        shadowPos[ i ].second += maxDrop;
     }
 
-  //the first row is filled by 0 cells
-  rowFilled[0]=0;
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        for ( int y = 0 ; y < numRows ; ++y ) {
+            if ( theBoard[ x ][ y ] != 0 ) {
+                window->fillBorderedRectangle( 
+                            boardPosn.first + x * blockWidth ,
+                            boardPosn.second + y * blockHeight ,
+                            blockWidth , blockHeight ,
+                            theBoard[ x ][ y ]->getColour() );
+            } // if
+            else if ( ( x == shadowPos[0].first && y == shadowPos[0].second ) ||
+                      ( x == shadowPos[1].first && y == shadowPos[1].second ) ||
+                      ( x == shadowPos[2].first && y == shadowPos[2].second ) ||
+                      ( x == shadowPos[3].first && y == shadowPos[3].second ) ) {
+                window->fillBorderedRectangle( 
+                            boardPosn.first + x * blockWidth ,
+                            boardPosn.second + y * blockHeight ,
+                            blockWidth , blockHeight ,
+                            Grey );
+            } // else if
+        } // for
+    } // for
+} // draw()
 
-  //for the up most row, NULL will be refilled
-  for(int x=0;x<num_columns;++x)
-    {
-      blockPtr[x][0]=0;
+void Board::print() {
+    //find out how much the block could drop
+    int maxDrop = activeBlock->calculateDrop();
+
+    //find out the current position of the current block
+    vector< pair< int , int > > shadowPos;
+    activeBlock->getPoints( shadowPos );
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        shadowPos[ i ].second += maxDrop;
     }
-}
+
+    for ( int y = 0 ; y < numRows ; ++y ) {
+        for ( int x = 0 ; x < numColumns ; ++x ) {
+            if ( theBoard[ x ][ y ] == 0 ) {
+                if ( ( x == shadowPos[0].first && y == shadowPos[0].second ) ||
+                     ( x == shadowPos[1].first && y == shadowPos[1].second ) ||
+                     ( x == shadowPos[2].first && y == shadowPos[2].second ) ||
+                     ( x == shadowPos[3].first && y == shadowPos[3].second ) ) {
+                    cout << "*";
+                } // if
+                else {
+                    cout << " ";
+                } // else
+            } // if
+            else {
+                cout << theBoard[x][y]->getType();
+            } // else
+        } // for
+        cout << endl;
+    } // for
+} // print()
+
+void Board::examine() {
+    int numRemovedRow = 0; //record how many rows have be removed
+    for ( int y = 0 ; y < numRows ; ++y ) {
+        if ( filledCellsInRow[ y ] == numColumns ) {
+            numRemovedRow += 1;
+            this->removeRow( y );
+        } // if
+    } // for
+    if ( numRemovedRow > 0 ) {
+        game->lineCleared( numRemovedRow );
+    } // if
+} // examine()
+
+void Board::removeRow( int rowToRm ) {
+    assert( rowToRm < numRows );
+    int cellLevel;  //record the level of the removed block
+
+    //call the blocks of row i to delete a cell
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        bool removed = theBoard[ x ][ rowToRm ]->deleteCell();
+        if ( removed ) {
+            cellLevel = theBoard[ x ][ rowToRm ]->getLevel();
+            game->blockCleared( cellLevel );
+            delete theBoard[ x ][ rowToRm ];
+        } // if
+    } // for
+
+    //shift the rows above row i downwards
+    for ( int y = rowToRm ; y > 0 ; --y ) {
+        for ( int x = 0 ; x < numColumns ; ++x ) {
+            theBoard[ x ][ y ] = theBoard[ x ][ y - 1 ];
+        } // for
+        //the record for the # of cells filled for each row
+        //should also be shifted
+        filledCellsInRow[ y ] = filledCellsInRow[ y - 1 ];
+    } // for
+
+    //the first row is filled by 0 cells
+    filledCellsInRow[ 0 ] = 0;
+
+    //for the up most row, NULL will be refilled
+    for ( int x = 0 ; x < numColumns ; ++x ) {
+        theBoard[ x ][ 0 ] = 0;
+    } // for
+} // removeRow()
+

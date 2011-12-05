@@ -17,35 +17,35 @@ pair< int , int > operator*( const int & i , const pair<int,int> & p1 ) {
 } // operator*
 // ---------------------------------------------------
 
-Block::Block( char type , pair< int, int > create_point , int level , Board * board )
-                : board( board ) , type( type ), starting_origin( create_point ), 
-                  birth_level(level) , num_living_cells(4) {
+Block::Block( char type , pair< int, int > createPoint , int level , Board * board )
+                : board( board ) , type( type ), startingOrigin( createPoint ), 
+                  birthLevel(level) , numLivingCells(4) {
 
 
-    origin = create_point;
+    origin = createPoint;
     fillPoints();
 } // Block
 
 // A transformation (e.g. rotate, move) generates an array of transformed points
 // and passes it to tryTransformation(). If the transformation doesn't result in
 // collisions in the board then tryTransformation() applies the transformation.
-void Block::tryTransformation( pair< int , int > transformed_points [] ,
-                               pair< int , int > transformed_origin ) {
-    bool transformation_success = true;
+void Block::tryTransformation( pair< int , int > transformedPoints [] ,
+                               pair< int , int > transformedOrigin ) {
+    bool transformationSuccess = true;
 
     // Check for collisions
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        if ( board->cellOccupied( this , transformed_points[i] ) ) {
-            transformation_success = false;
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        if ( board->cellOccupied( this , transformedPoints[i] ) ) {
+            transformationSuccess = false;
             break;
         } // if
     } // for
 
-    if ( transformation_success ) {
+    if ( transformationSuccess ) {
         board->deleteBlock( this );
-        origin = transformed_origin;
-        for ( int i = 0 ; i < points_per_block ; ++i ) {
-            points[i] = transformed_points[i];
+        origin = transformedOrigin;
+        for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+            points[i] = transformedPoints[i];
         } // for
         board->addBlock( this );
     } // if
@@ -53,57 +53,57 @@ void Block::tryTransformation( pair< int , int > transformed_points [] ,
 
 // Moves each point in block by specified x and y coordinates.
 void Block::move( int x , int y ) {
-    pair< int , int > transformed_points [points_per_block];
-    pair< int , int > transformed_origin;
-    transformed_origin = make_pair( origin.first + x , origin.second + y );
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        transformed_points[i] 
+    pair< int , int > transformedPoints [pointsPerBlock];
+    pair< int , int > transformedOrigin;
+    transformedOrigin = make_pair( origin.first + x , origin.second + y );
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        transformedPoints[i] 
             = make_pair( points[i].first + x , points[i].second + y );
     } // for
-    tryTransformation( transformed_points , transformed_origin );
+    tryTransformation( transformedPoints , transformedOrigin );
 } // move()
 
 // Rotates block right if "left" is false.
 void Block::rotate( bool left ) {
-    pair< int , int > transformed_points [points_per_block];
+    pair< int , int > transformedPoints [pointsPerBlock];
 
     // Transform each point into local coordinate system, apply the rotation,
     // and then convert the result back into original coordinate system.
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        pair< int , int > current_point = points[i] - origin;
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        pair< int , int > currentPoint = points[i] - origin;
         
-        int prev_x_coord = current_point.first;
+        int prevXCoord = currentPoint.first;
         if ( left ) {
-            current_point.first = current_point.second;
-            current_point.second = prev_x_coord * -1;
+            currentPoint.first = currentPoint.second;
+            currentPoint.second = prevXCoord * -1;
         } // if
         else {
-            current_point.first = current_point.second * -1;
-            current_point.second = prev_x_coord;
+            currentPoint.first = currentPoint.second * -1;
+            currentPoint.second = prevXCoord;
         } // else
 
-        current_point = current_point + origin;
-        transformed_points[i] = current_point;
+        currentPoint = currentPoint + origin;
+        transformedPoints[i] = currentPoint;
     } // for
 
     // Shift the transformed points in line with the origin to get final result
     // of transformation
-    for ( int i = 0 ; i < points_per_block ; ++i ) {
-        int x_coord_diff = origin.first - transformed_points[i].first;
-        int y_coord_diff = transformed_points[i].second - origin.second;
-        if ( x_coord_diff > 0 ) {
-            for ( int j = 0 ; j < points_per_block ; ++j ) {
-                transformed_points[j].first += x_coord_diff;
+    for ( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        int xCoordDiff = origin.first - transformedPoints[i].first;
+        int yCoordDiff = transformedPoints[i].second - origin.second;
+        if ( xCoordDiff > 0 ) {
+            for ( int j = 0 ; j < pointsPerBlock ; ++j ) {
+                transformedPoints[j].first += xCoordDiff;
             } // for
         } // if
-        if ( y_coord_diff > 0 ) {
-            for ( int j = 0 ; j < points_per_block ; ++j ) {
-                transformed_points[j].second -= y_coord_diff;
+        if ( yCoordDiff > 0 ) {
+            for ( int j = 0 ; j < pointsPerBlock ; ++j ) {
+                transformedPoints[j].second -= yCoordDiff;
             } // for
         } // if
     } // for
 
-    tryTransformation( transformed_points , origin );
+    tryTransformation( transformedPoints , origin );
 } // rotate() 
 
 void Block::moveLeft() {
@@ -129,32 +129,32 @@ void Block::leftRotate() {
 //helper function to see how much a block can drop
 int Block::calculateDrop()
 {
-   int furthest_possible_drop = num_rows;
+   int furthestPossibleDrop = numRows;
 
     // Look down from each point in the block to see how far can
     // drop.
-    for( int i = 0 ; i < points_per_block ; ++i ) {
-        int possible_drop = 0;
-        for ( int j = points[i].second + 1 ; j < num_rows ; ++j ) {
-            pair< int , int > current_point = 
+    for( int i = 0 ; i < pointsPerBlock ; ++i ) {
+        int possibleDrop = 0;
+        for ( int j = points[i].second + 1 ; j < numRows ; ++j ) {
+            pair< int , int > currentPoint = 
                 make_pair( points[i].first, j );
-            if ( ! board->cellOccupied( this , current_point ) ) {
-                possible_drop += 1;
+            if ( ! board->cellOccupied( this , currentPoint ) ) {
+                possibleDrop += 1;
             } // if
             else {
                 break;
             } // else
         } // for
-        if ( possible_drop < furthest_possible_drop ) {
-            furthest_possible_drop = possible_drop;
+        if ( possibleDrop < furthestPossibleDrop ) {
+            furthestPossibleDrop = possibleDrop;
         }
     }
-    return furthest_possible_drop;
+    return furthestPossibleDrop;
 }
 void Block::drop() {
 
-  int furthest_possible_drop=this->calculateDrop();
-  move ( 0 , furthest_possible_drop );
+  int furthestPossibleDrop=this->calculateDrop();
+  move ( 0 , furthestPossibleDrop );
 }
 
 char Block::getType() const {
@@ -162,75 +162,75 @@ char Block::getType() const {
 } 
 
 colour Block::getColour() const {
-    return the_colour;
+    return theColour;
 } 
 
 int Block::getLevel() const {
-    return birth_level;
+    return birthLevel;
 }
 
-void Block::getPoints( vector< pair<int,int> > & points_vector ) const {
-    points_vector.assign( points , points + points_per_block );
+void Block::getPoints( vector< pair<int,int> > & pointsVector ) const {
+    pointsVector.assign( points , points + pointsPerBlock );
 }
 
 bool Block::deleteCell() {
-    num_living_cells -= 1;
-    return (num_living_cells == 0) ? true : false;
+    numLivingCells -= 1;
+    return (numLivingCells == 0) ? true : false;
 }
 
 void Block::fillPoints() {
-    pair< int , int > x_increment = make_pair( 1 , 0 );
-    pair< int , int > y_increment = make_pair( 0 , 1 );
+    pair< int , int > xIncrement = make_pair( 1 , 0 );
+    pair< int , int > yIncrement = make_pair( 0 , 1 );
 
     switch ( type ) {
         case 'Z' :
-            points[0] = origin - y_increment; 
-            points[1] = origin - y_increment + x_increment;
-            points[2] = origin + x_increment;
-            points[3] = origin + 2 * x_increment;
-            the_colour = Blue;
+            points[0] = origin - yIncrement; 
+            points[1] = origin - yIncrement + xIncrement;
+            points[2] = origin + xIncrement;
+            points[3] = origin + 2 * xIncrement;
+            theColour = Blue;
             break;
         case 'T' :
-            points[0] = origin - y_increment;
-            points[1] = origin - y_increment + x_increment;
-            points[2] = origin - y_increment + 2 * x_increment;
-            points[3] = origin + x_increment; 
-            the_colour = Orange;
+            points[0] = origin - yIncrement;
+            points[1] = origin - yIncrement + xIncrement;
+            points[2] = origin - yIncrement + 2 * xIncrement;
+            points[3] = origin + xIncrement; 
+            theColour = Orange;
             break;
         case 'I' :
             points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + 2 * x_increment;
-            points[3] = origin + 3 * x_increment;
-            the_colour = Red;
+            points[1] = origin + xIncrement;
+            points[2] = origin + 2 * xIncrement;
+            points[3] = origin + 3 * xIncrement;
+            theColour = Red;
             break;
         case 'J' :
-            points[0] = origin - y_increment;
+            points[0] = origin - yIncrement;
             points[1] = origin;
-            points[2] = origin + x_increment;
-            points[3] = origin + 2 * x_increment;
-            the_colour = Yellow;
+            points[2] = origin + xIncrement;
+            points[3] = origin + 2 * xIncrement;
+            theColour = Yellow;
             break;
         case 'L' :
             points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + 2 * x_increment;
-            points[3] = origin + 2 * x_increment - y_increment;
-            the_colour = Green;
+            points[1] = origin + xIncrement;
+            points[2] = origin + 2 * xIncrement;
+            points[3] = origin + 2 * xIncrement - yIncrement;
+            theColour = Green;
             break;
         case 'O' :
-            points[0] = origin - y_increment;
+            points[0] = origin - yIncrement;
             points[1] = origin;
-            points[2] = origin - y_increment + x_increment;
-            points[3] = origin + x_increment;
-            the_colour = Brown;
+            points[2] = origin - yIncrement + xIncrement;
+            points[3] = origin + xIncrement;
+            theColour = Brown;
             break;
         case 'S' :
             points[0] = origin;
-            points[1] = origin + x_increment;
-            points[2] = origin + x_increment - y_increment;
-            points[3] = origin + 2 * x_increment - y_increment;
-            the_colour = Cyan;
+            points[1] = origin + xIncrement;
+            points[2] = origin + xIncrement - yIncrement;
+            points[3] = origin + 2 * xIncrement - yIncrement;
+            theColour = Cyan;
     } // switch
 }
 
@@ -238,7 +238,7 @@ void Block::fillPoints() {
 // origin.
 void Block::reset() {
     board->deleteBlock( this );
-    origin = starting_origin;
+    origin = startingOrigin;
     fillPoints();
     board->setActiveBlock(this);
 }
