@@ -192,6 +192,9 @@ void Board::print() {
     } // for
 } // print()
 
+/*
+ * Called after a block drops to see if any rows can be cleared.
+ */
 void Board::clearFilledRows() {
     int rowsRemoved = 0;
     for ( int y = 0 ; y < numRows ; ++y ) {
