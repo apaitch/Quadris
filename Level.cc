@@ -19,7 +19,7 @@ Level::Level( Board * board , QuadrisGame * game , int seed )
 
     blockSequenceFile.open( "sequence.txt" );
 
-    //find the type of the fist Block
+    // Find the type of the first Block
     findNextBlockType();
 } // Level
 
@@ -143,10 +143,10 @@ void Level::findNextBlockType() {
 Block * Level::getNextBlock() {
     Block * newBlock;
 
-    //when create new bolck, findNextBlockType() function has
-    //already been called, so nextBlockType has already been renewed
     newBlock = new Block( nextBlockType , startingOrigin ,
                           currentLevel , board );
+
+    // Refresh the next block type.
     findNextBlockType();
 
     return newBlock;
@@ -172,6 +172,10 @@ void Level::levelDown() {
     findNextBlockType();
 } // levelDown()
 
+/*---------------
+ * Drawing/Printing Methods
+ *      This is hard-coded ;)
+ *---------------*/
 void Level::printNext() {
     if ( nextBlockType == 'I' ) {
         cout << "IIII" << endl;
