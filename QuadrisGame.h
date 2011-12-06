@@ -28,9 +28,9 @@ class QuadrisGame {
 	Xwindow * nextWindow;  //display the next block
         Ai * ai;
 
-        bool textOnly;
-        bool aiOn;
         bool gameOver;
+        bool aiOn;
+        bool textOnly;
 
         // Command Functions
         void rightRotate( int );

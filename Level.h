@@ -33,9 +33,6 @@ class Level {
         blockType numToBlockType( int ); 
 	  // Like an immutable map
 
-        void restart();
-	  //clear current 
-
         int generateBlockNumber();
 	  //random number generator 
 

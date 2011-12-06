@@ -19,8 +19,8 @@ QuadrisGame::QuadrisGame( bool textOnly , int aiLevel , int seed )
                              mainWindow( 0 ) ,
                              nextWindow( 0 ) ,
                              ai ( 0 ) ,
-                             aiOn ( false ) ,
                              gameOver ( false ) ,
+                             aiOn ( false ) ,
                              textOnly( textOnly ) {
     if ( ! textOnly ) {
         mainWindow = new Xwindow( mainWindowWidth , mainWindowHeight );
@@ -179,7 +179,7 @@ void QuadrisGame::runGameLoop() {
                 if ( commandFn != 0 ) {
                     CALL_MEMBER_FN(*this , commandFn)( 1 );
                     output();
-                    usleep( 50000 );
+                    usleep( 200000 );
                 } // if
             } // for
         } // while
